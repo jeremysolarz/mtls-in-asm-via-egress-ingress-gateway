@@ -1,0 +1,72 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vs-alias
+spec:
+  hosts:
+    - httpbin-external
+  http:
+    - match:
+        - uri:
+            regex: ".*"
+      rewrite:
+        authority: httpbin-mutual-tls.jeremysolarz.app
+      route:
+        - destination:
+            host: istio-egressgateway.istio-system.svc.cluster.local
+            subset: httpbin
+            port:
+              number: 443
+          weight: 100
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: direct-httpbin-through-egress-gateway
+spec:
+  hosts:
+  - httpbin-mutual-tls.jeremysolarz.app
+  gateways:
+  - istio-egressgateway
+  - mesh
+  http:
+  - match:
+    - gateways:
+      - mesh
+      port: 80
+    route:
+    - destination:
+        host: istio-egressgateway.istio-system.svc.cluster.local
+        subset: httpbin
+        port:
+          number: 443
+      weight: 100
+  - match:
+    - gateways:
+      - istio-egressgateway
+      port: 443
+    route:
+    - destination:
+        host: httpbin-mutual-tls.jeremysolarz.app
+        port:
+          number: 443
+      weight: 100
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: originate-mtls-for-httpbin
+spec:
+  host: httpbin-mutual-tls.jeremysolarz.app
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+    portLevelSettings:
+    - port:
+        number: 443
+      tls:
+        mode: MUTUAL
+        clientCertificate: /etc/istio/httpbin-client-certs/tls.crt
+        privateKey: /etc/istio/httpbin-client-certs/tls.key
+        caCertificates: /etc/istio/httpbin-ca-certs/ca-chain.cert.pem
+        sni: httpbin-mutual-tls.jeremysolarz.app
