@@ -8,7 +8,7 @@ kubectl delete --ignore-not-found=true secret httpbin-client-certs httpbin-ca-ce
 
 kubectl delete --ignore-not-found=true service httpbin-external
 kubectl delete --ignore-not-found=true virtualservice vs-alias
-kubectl delete --ignore-not-found=true gateway istio-egressgateway
+kubectl delete --ignore-not-found=true gateway istio-egressgateway-httpbin
 kubectl delete --ignore-not-found=true serviceentry httpbin-serviceentry
 kubectl delete --ignore-not-found=true virtualservice direct-httpbin-through-egress-gateway
 kubectl delete --ignore-not-found=true destinationrule originate-mtls-for-httpbin
