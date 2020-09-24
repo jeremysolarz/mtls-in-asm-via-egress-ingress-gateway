@@ -1,6 +1,6 @@
 ####
-CERTS_ROOT="../../mysql-eks-certs"
-URL="mysql-mutual-tls-eks.jeremysolarz.app"
+CERTS_ROOT="../../httpbin-certs"
+URL="httpbin-mutual-tls.jeremysolarz.app"
 
 gcloud config set project vch-anthos-demo
 gcloud container clusters get-credentials anthos-gcp --region europe-west4 --project vch-anthos-demo

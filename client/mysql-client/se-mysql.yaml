@@ -4,20 +4,20 @@ metadata:
   name: mysql-external
 spec:
   hosts:
-    - mysql-mutual-tls-eks.jeremysolarz.app
+    - httpbin-mutual-tls.jeremysolarz.app
   location: MESH_EXTERNAL
   ports:
     - number: 3306
       name: tcp
       protocol: TCP
-    - number: 13306
+    - number: 16443
       name: tls
       protocol: TLS
   resolution: DNS
   endpoints:
-    - address: mysql-mutual-tls-eks.jeremysolarz.app
+    - address: httpbin-mutual-tls.jeremysolarz.app
       ports:
-        tls: 13306
+        tls: 16443
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -32,7 +32,7 @@ spec:
         name: tls
         protocol: TLS
       hosts:
-        - mysql-mutual-tls-eks.jeremysolarz.app
+        - httpbin-mutual-tls.jeremysolarz.app
       tls:
         mode: ISTIO_MUTUAL
 ---
@@ -52,7 +52,7 @@ spec:
               number: 15443
             tls:
               mode: ISTIO_MUTUAL
-              sni: mysql-mutual-tls-eks.jeremysolarz.app
+              sni: httpbin-mutual-tls.jeremysolarz.app
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -60,7 +60,7 @@ metadata:
   name: direct-mysql-through-egress-gateway
 spec:
   hosts:
-    - mysql-mutual-tls-eks.jeremysolarz.app
+    - httpbin-mutual-tls.jeremysolarz.app
   gateways:
     - istio-egressgateway-mysql
     - mesh
@@ -82,9 +82,9 @@ spec:
           port: 15443
       route:
         - destination:
-            host: mysql-mutual-tls-eks.jeremysolarz.app
+            host: httpbin-mutual-tls.jeremysolarz.app
             port:
-              number: 13306
+              number: 16443
           weight: 100
 ---
 apiVersion: networking.istio.io/v1alpha3
@@ -92,16 +92,16 @@ kind: DestinationRule
 metadata:
   name: originate-mtls-for-mysql
 spec:
-  host: mysql-mutual-tls-eks.jeremysolarz.app
+  host: httpbin-mutual-tls.jeremysolarz.app
   trafficPolicy:
     loadBalancer:
       simple: ROUND_ROBIN
     portLevelSettings:
       - port:
-          number: 13306
+          number: 16443
         tls:
           mode: MUTUAL
-          clientCertificate: /etc/istio/httpbin-client-certs/tls.crt
-          privateKey: /etc/istio/httpbin-client-certs/tls.key
-          caCertificates: /etc/istio/httpbin-ca-certs/ca-chain.cert.pem
-          sni: mysql-mutual-tls-eks.jeremysolarz.app
+          clientCertificate: /etc/istio/mysql-client-certs/tls.crt
+          privateKey: /etc/istio/mysql-client-certs/tls.key
+          caCertificates: /etc/istio/mysql-ca-certs/ca-chain.cert.pem
+          sni: httpbin-mutual-tls.jeremysolarz.app
