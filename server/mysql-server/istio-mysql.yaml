@@ -1,0 +1,41 @@
+## EDIT istio-ingress
+# kubectl edit svc -n istio-system istio-ingressgateway
+## ADD port
+#  - name: tls-mysql
+#    nodePort: 31986
+#    port: 13306
+#    targetPort: 13306
+#    protocol: TCP
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: gateway-mysql
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 13306
+      name: tls-mysql
+      protocol: TLS
+    tls:
+      mode: MUTUAL
+      credentialName: mysql-credential
+    hosts:
+    - "mysql-mutual-tls.jeremysolarz.app"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mysql-virtual-service
+spec:
+  hosts:
+    - 'mysql-mutual-tls.jeremysolarz.app'
+  gateways:
+    - gateway-mysql
+  tcp:
+    - route:
+        - destination:
+            port:
+              number: 3306
+            host: mysql.default.svc.cluster.local
