@@ -1,5 +1,6 @@
 httpbin-certs
 mysql-certs
+mysql-eks-certs/
 *.tar.gz
 save
 **/*.tar.gz

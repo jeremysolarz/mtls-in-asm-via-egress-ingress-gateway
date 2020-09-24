@@ -22,7 +22,7 @@ spec:
       mode: MUTUAL
       credentialName: mysql-credential
     hosts:
-    - "mysql-mutual-tls.jeremysolarz.app"
+    - "mysql-mutual-tls-eks.jeremysolarz.app"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -30,7 +30,7 @@ metadata:
   name: mysql-virtual-service
 spec:
   hosts:
-    - 'mysql-mutual-tls.jeremysolarz.app'
+    - 'mysql-mutual-tls-eks.jeremysolarz.app'
   gateways:
     - gateway-mysql
   tcp:

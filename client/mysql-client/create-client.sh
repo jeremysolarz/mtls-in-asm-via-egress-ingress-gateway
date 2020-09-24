@@ -1,5 +1,6 @@
 ####
-CERTS_ROOT="../../httpbin-certs"
+CERTS_ROOT="../../mysql-eks-certs"
+URL="mysql-mutual-tls-eks.jeremysolarz.app"
 
 gcloud config set project vch-anthos-demo
 gcloud container clusters get-credentials anthos-gcp --region europe-west4 --project vch-anthos-demo
@@ -7,8 +8,8 @@ gcloud container clusters get-credentials anthos-gcp --region europe-west4 --pro
 # ./clean-up.sh
 
 kubectl create -n istio-system secret tls httpbin-client-certs \
-  --key $CERTS_ROOT/4_client/private/httpbin-mutual-tls.jeremysolarz.app.key.pem \
-  --cert $CERTS_ROOT/4_client/certs/httpbin-mutual-tls.jeremysolarz.app.cert.pem
+  --key $CERTS_ROOT/4_client/private/${URL}.key.pem \
+  --cert $CERTS_ROOT/4_client/certs/${URL}.cert.pem
 
 kubectl create -n istio-system secret generic httpbin-ca-certs --from-file=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
 

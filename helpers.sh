@@ -46,6 +46,12 @@ curl https://mysql-mutual-tls.jeremysolarz.app:13306 \
   --cert $CERTS_ROOT/4_client/certs/mysql-mutual-tls.jeremysolarz.app.cert.pem \
   --key $CERTS_ROOT/4_client/private/mysql-mutual-tls.jeremysolarz.app.key.pem
 
+export CERTS_ROOT="../../mysql-eks-certs"
+curl https://mysql-mutual-tls-eks.jeremysolarz.app:13306 \
+  --cacert $CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem \
+  --cert $CERTS_ROOT/4_client/certs/mysql-mutual-tls-eks.jeremysolarz.app.cert.pem \
+  --key $CERTS_ROOT/4_client/private/mysql-mutual-tls-eks.jeremysolarz.app.key.pem
+
 # mysql -hmysql-mutual-tls.jeremysolarz.app -pyougottoknowme
 
 ## server
