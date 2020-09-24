@@ -1,0 +1,40 @@
+[{
+  "op": "add",
+  "path": "/spec/template/spec/containers/0/volumeMounts/0",
+  "value": {
+    "mountPath": "/etc/istio/httpbin-client-certs",
+    "name": "httpbin-client-certs",
+    "readOnly": true
+  }
+},
+{
+  "op": "add",
+  "path": "/spec/template/spec/volumes/0",
+  "value": {
+  "name": "httpbin-client-certs",
+    "secret": {
+      "secretName": "httpbin-client-certs",
+      "optional": true
+    }
+  }
+},
+{
+  "op": "add",
+  "path": "/spec/template/spec/containers/0/volumeMounts/1",
+  "value": {
+    "mountPath": "/etc/istio/httpbin-ca-certs",
+    "name": "httpbin-ca-certs",
+    "readOnly": true
+  }
+},
+{
+  "op": "add",
+  "path": "/spec/template/spec/volumes/1",
+  "value": {
+  "name": "httpbin-ca-certs",
+    "secret": {
+      "secretName": "httpbin-ca-certs",
+      "optional": true
+    }
+  }
+}]
