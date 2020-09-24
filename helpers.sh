@@ -20,17 +20,40 @@ kubectl exec -it -n istio-system "$(kubectl get pod -n istio-system -l app=istio
  --cert /etc/istio/nginx-client-certs/tls.crt \
  --key /etc/istio/nginx-client-certs/tls.key \
  https://httpbin-mutual-tls.jeremysolarz.app/status/418
+.
+# curl https://httpbin-mutual-tls.jeremysolarz.app/status/418 \
+#  --cacert 2_intermediate/certs/ca-chain.cert.pem \
+#  --cert 4_client/certs/httpbin-mutual-tls.jeremysolarz.app.cert.pem \
+#  --key 4_client/private/httpbin-mutual-tls.jeremysolarz.app.key.pem
+#
+# curl -v http://httpbin-mutual-tls.jeremysolarz.app/status/418
+#
+# curl -v httpbin-external/status/418
 
-curl https://httpbin-mutual-tls.jeremysolarz.app/status/418 \
-  --cacert 2_intermediate/certs/ca-chain.cert.pem \
-  --cert 4_client/certs/nginx.example.com.cert.pem \
-  --key 4_client/private/nginx.example.com.key.pem
 
-curl -v http://httpbin-mutual-tls.jeremysolarz.app/status/418
+# echo hello | openssl s_client -connect httpbin-mutual-tls.jeremysolarz.app:3306
+# mysql -h httpbin-mutual-tls.jeremysolarz.app -pGoogle1!
 
-curl -v httpbin-external/status/418
+export CERTS_ROOT="../../httpbin-certs"
+curl https://httpbin-mutual-tls.jeremysolarz.app:16443 \
+  --cacert $CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem \
+  --cert $CERTS_ROOT/4_client/certs/httpbin-mutual-tls.jeremysolarz.app.cert.pem \
+  --key $CERTS_ROOT/4_client/private/httpbin-mutual-tls.jeremysolarz.app.key.pem
 
+export CERTS_ROOT="../../mysql-certs"
+curl https://mysql-mutual-tls.jeremysolarz.app:13306 \
+  --cacert $CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem \
+  --cert $CERTS_ROOT/4_client/certs/mysql-mutual-tls.jeremysolarz.app.cert.pem \
+  --key $CERTS_ROOT/4_client/private/mysql-mutual-tls.jeremysolarz.app.key.pem
 
-echo hello | openssl s_client -connect httpbin-mutual-tls.jeremysolarz.app:3306
+# mysql -hmysql-mutual-tls.jeremysolarz.app -pyougottoknowme
 
-mysql -h httpbin-mutual-tls.jeremysolarz.app -pGoogle1!
+## server
+# create database remote_connection;
+# use remote_connection;
+# create table hello_world(text varchar(255));
+# insert into hello_world(text) values('hello terasky');
+# insert into hello_world(text) values('hello mambu');
+
+## client
+## use remote_connection; select * from hello_world;
