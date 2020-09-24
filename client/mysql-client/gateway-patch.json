@@ -2,8 +2,8 @@
   "op": "add",
   "path": "/spec/template/spec/containers/0/volumeMounts/0",
   "value": {
-    "mountPath": "/etc/istio/httpbin-client-certs",
-    "name": "httpbin-client-certs",
+    "mountPath": "/etc/istio/mysql-client-certs",
+    "name": "mysql-client-certs",
     "readOnly": true
   }
 },
@@ -11,9 +11,9 @@
   "op": "add",
   "path": "/spec/template/spec/volumes/0",
   "value": {
-  "name": "httpbin-client-certs",
+  "name": "mysql-client-certs",
     "secret": {
-      "secretName": "httpbin-client-certs",
+      "secretName": "mysql-client-certs",
       "optional": true
     }
   }
@@ -22,8 +22,8 @@
   "op": "add",
   "path": "/spec/template/spec/containers/0/volumeMounts/1",
   "value": {
-    "mountPath": "/etc/istio/httpbin-ca-certs",
-    "name": "httpbin-ca-certs",
+    "mountPath": "/etc/istio/mysql-ca-certs",
+    "name": "mysql-ca-certs",
     "readOnly": true
   }
 },
@@ -31,9 +31,9 @@
   "op": "add",
   "path": "/spec/template/spec/volumes/1",
   "value": {
-  "name": "httpbin-ca-certs",
+  "name": "mysql-ca-certs",
     "secret": {
-      "secretName": "httpbin-ca-certs",
+      "secretName": "mysql-ca-certs",
       "optional": true
     }
   }

@@ -3,8 +3,8 @@ gcloud config set project vch-anthos-demo
 gcloud container clusters get-credentials anthos-gcp --region europe-west4 --project vch-anthos-demo
 
 kubectl delete --ignore-not-found=true -f se-mysql.yaml
-kubectl delete --ignore-not-found=true secret httpbin-client-certs httpbin-ca-certs
-kubectl delete --ignore-not-found=true secret httpbin-client-certs httpbin-ca-certs -n istio-system
+kubectl delete --ignore-not-found=true secret mysql-client-certs mysql-ca-certs
+kubectl delete --ignore-not-found=true secret mysql-client-certs mysql-ca-certs -n istio-system
 
 # reset ASM
 istioctl install \
