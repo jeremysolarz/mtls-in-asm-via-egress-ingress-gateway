@@ -1,10 +1,10 @@
 ####
-CERTS_ROOT=".."
+CERTS_ROOT="../../httpbin-certs"
 
 gcloud config set project vch-anthos-demo
 gcloud container clusters get-credentials anthos-gcp --region europe-west4 --project vch-anthos-demo
 
-# ./clean-up.sh
+./clean-up.sh
 
 kubectl apply -f httpbin-external.yaml
 

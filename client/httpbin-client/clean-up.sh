@@ -18,8 +18,8 @@ kubectl delete --ignore-not-found=true deployment sleep
 
 # reset ASM
 istioctl install \
-  -f ../../istio-1.6.8-asm.9/asm/cluster/istio-operator.yaml \
--f ../../istio-features.yaml
+  -f ../../../istio-1.6.8-asm.9/asm/cluster/istio-operator.yaml \
+-f ../../../istio-features.yaml
 
 kubectl get deploy -n istio-system
 kubectl get ns
