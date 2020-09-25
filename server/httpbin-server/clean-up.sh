@@ -1,3 +1,6 @@
-kubectl delete --ignore-not-found=true gateway mygateway
-kubectl delete --ignore-not-found=true virtualservice httpbin
-kubectl delete --ignore-not-found=true -n istio-system secret httpbin-credential httpbin-credential-cacert
+../set-project-and-cluster-server.sh
+
+kubectl delete --ignore-not-found=true gateway gateway-mutual
+kubectl delete --ignore-not-found=true virtualservice virtual-service
+kubectl delete --ignore-not-found=true -n istio-system secret service-credential \
+  service-credential-cacert

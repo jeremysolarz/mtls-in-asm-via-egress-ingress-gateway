@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: mygateway
+  name: gateway-mutual
 spec:
   selector:
     istio: ingressgateway # use istio default ingress gateway
@@ -12,6 +12,6 @@ spec:
         protocol: HTTPS
       tls:
         mode: MUTUAL
-        credentialName: httpbin-credential # must be the same as secret
+        credentialName: service-credential # must be the same as secret
       hosts:
-        - httpbin-mutual-tls.jeremysolarz.app
+        - SERVICE_URL

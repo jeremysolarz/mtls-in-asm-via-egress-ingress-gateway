@@ -1,26 +1,30 @@
-
-gcloud config set project jsolarz-sandbox
-gcloud container clusters get-credentials anthos-on-gcp --zone us-central1-c --project jsolarz-sandbox
+../set-project-and-cluster-server.sh
 
 ./clean-up.sh
 
 # folder where certificates are stored created by mtls-go-example
-CERTS_ROOT="../../httpbin-certs"
+CERTS_ROOT="../../certs"
+
+export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
 
 # url of the external service
-SERVICE_URL="httpbin-mutual-tls.jeremysolarz.app"
+SERVICE_URL="$INGRESS_HOST.nip.io"
 
-
-kubectl create -n istio-system secret generic httpbin-credential \
+kubectl create -n istio-system secret generic service-credential \
 --from-file=tls.key=$CERTS_ROOT/3_application/private/${SERVICE_URL}.key.pem \
 --from-file=tls.crt=$CERTS_ROOT/3_application/certs/${SERVICE_URL}.cert.pem \
 --from-file=ca.crt=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
 
-kubectl create -n istio-system secret generic httpbin-credential-cacert \
+kubectl create -n istio-system secret generic service-credential-cacert \
 --from-file=cacert=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
 
-kubectl apply -f httpbin-gw-mutual.yaml
-kubectl apply -f httpbin-vs.yaml
+sed "s/SERVICE_URL/$SERVICE_URL/" virtual-service.yaml.tmpl > virtual-service.yaml
+sed "s/SERVICE_URL/$SERVICE_URL/" gateway-mutual.yaml.tmpl > gateway-mutual.yaml
+
+kubectl apply -f virtual-service.yaml
+kubectl apply -f gateway-mutual.yaml
+
 
 sleep 5
 # jsolarz-sanbox
