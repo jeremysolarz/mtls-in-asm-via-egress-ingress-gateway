@@ -1,10 +1,9 @@
+*“Copyright 202019 Google LLC. This software is provided as-is, without warranty or representation for any use or purpose.*
+*Your use of it is subject to your agreements with Google.”*  
 # Mutual-TLS encryption in ASM (via Egress and Ingress)
 
 The following repository should help in setting up mTLS between two clusters via encryption at Egress / Ingress 
 gateway.
-
-*“Copyright 202019 Google LLC. This software is provided as-is, without warranty or representation for any use or purpose.*
-*Your use of it is subject to your agreements with Google.”*  
 
 ## Prerequesists
 
