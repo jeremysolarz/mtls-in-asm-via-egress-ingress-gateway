@@ -1,6 +1,4 @@
-gcloud config set project vch-anthos-demo
-
-gcloud container clusters get-credentials anthos-gcp --region europe-west4 --project vch-anthos-demo
+../set-project-and-cluster-client.mesh
 
 kubectl delete --ignore-not-found=true secret httpbin-server-certs httpbin-ca-certs -n mesh-external
 kubectl delete --ignore-not-found=true secret httpbin-client-certs httpbin-ca-certs
