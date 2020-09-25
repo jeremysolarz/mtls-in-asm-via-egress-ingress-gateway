@@ -1,11 +1,14 @@
-####
-CERTS_ROOT="../../httpbin-certs"
-SERVICE_URL="httpbin-mutual-tls.jeremysolarz.app"
-
 gcloud config set project vch-anthos-demo
+
 gcloud container clusters get-credentials anthos-gcp --region europe-west4 --project vch-anthos-demo
 
-# ./clean-up.sh
+./clean-up.sh
+
+# folder where certificates are stored created by mtls-go-example
+CERTS_ROOT="../../httpbin-certs"
+
+# url of the external service
+SERVICE_URL="httpbin-mutual-tls.jeremysolarz.app"
 
 kubectl create -n istio-system secret tls httpbin-client-certs \
   --key $CERTS_ROOT/4_client/private/${SERVICE_URL}.key.pem \
