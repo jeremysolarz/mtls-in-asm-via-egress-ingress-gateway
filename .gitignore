@@ -9,3 +9,4 @@ istio-1.6.8-asm.9/
 *.tar.gz
 save
 **/*.tar.gz
+server/httpbin-server/*.yaml
