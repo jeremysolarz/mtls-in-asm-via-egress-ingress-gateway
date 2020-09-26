@@ -2,5 +2,5 @@
 
 kubectl delete --ignore-not-found=true gateway gateway-mutual
 kubectl delete --ignore-not-found=true virtualservice virtual-service
-kubectl delete --ignore-not-found=true -n istio-system secret service-credential \
-  service-credential-cacert
+kubectl delete --ignore-not-found=true -n istio-system secret httpbin-credential \
+  httpbin-credential-cacert

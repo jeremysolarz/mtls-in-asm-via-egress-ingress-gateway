@@ -11,12 +11,12 @@ export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressga
 # url of the external service
 SERVICE_URL="$INGRESS_HOST.nip.io"
 
-kubectl create -n istio-system secret generic service-credential \
+kubectl create -n istio-system secret generic httpbin-credential \
 --from-file=tls.key=$CERTS_ROOT/3_application/private/${SERVICE_URL}.key.pem \
 --from-file=tls.crt=$CERTS_ROOT/3_application/certs/${SERVICE_URL}.cert.pem \
 --from-file=ca.crt=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
 
-kubectl create -n istio-system secret generic service-credential-cacert \
+kubectl create -n istio-system secret generic httpbin-credential-cacert \
 --from-file=cacert=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
 
 sed "s/SERVICE_URL/$SERVICE_URL/" virtual-service.yaml.tmpl > virtual-service.yaml
