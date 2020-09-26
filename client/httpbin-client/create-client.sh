@@ -28,7 +28,7 @@ kubectl create secret generic httpbin-ca-certs --from-file=$CERTS_ROOT/2_interme
 
 kubectl apply -f sleep.yaml
 
-sleep 5
+sleep 10
 export SOURCE_POD=$(kubectl get pod -l app=sleep -o jsonpath={.items..metadata.name})
 echo $SOURCE_POD
 
