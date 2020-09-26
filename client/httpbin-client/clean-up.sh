@@ -1,4 +1,4 @@
-../set-project-and-cluster-client.mesh
+../set-project-and-cluster-client.sh
 
 kubectl delete --ignore-not-found=true secret httpbin-server-certs httpbin-ca-certs -n mesh-external
 kubectl delete --ignore-not-found=true secret httpbin-client-certs httpbin-ca-certs
@@ -16,8 +16,8 @@ kubectl delete --ignore-not-found=true deployment sleep
 
 # reset ASM
 istioctl install \
-  -f ../../../istio-1.6.8-asm.9/asm/cluster/istio-operator.yaml \
--f ../../../istio-features.yaml
+  -f ../../istio-1.6.8-asm.9/asm/cluster/istio-operator.yaml \
+-f ../features.yaml
 
 kubectl get deploy -n istio-system
 kubectl get ns

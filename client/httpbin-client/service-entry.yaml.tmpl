@@ -4,7 +4,7 @@ metadata:
   name: httpbin-serviceentry
 spec:
   hosts:
-  - httpbin-mutual-tls.jeremysolarz.app
+  - SERVICE_URL
   location: MESH_EXTERNAL
   ports:
   - number: 80
@@ -15,6 +15,6 @@ spec:
     protocol: HTTPS
   resolution: DNS
   endpoints:
-  - address: httpbin-mutual-tls.jeremysolarz.app
+  - address: SERVICE_URL
     ports:
       https: 443

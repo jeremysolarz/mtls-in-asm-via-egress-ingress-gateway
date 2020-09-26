@@ -10,7 +10,7 @@ spec:
         - uri:
             regex: ".*"
       rewrite:
-        authority: httpbin-mutual-tls.jeremysolarz.app
+        authority: SERVICE_URL
       route:
         - destination:
             host: istio-egressgateway.istio-system.svc.cluster.local
@@ -25,7 +25,7 @@ metadata:
   name: direct-httpbin-through-egress-gateway
 spec:
   hosts:
-  - httpbin-mutual-tls.jeremysolarz.app
+  - SERVICE_URL
   gateways:
   - istio-egressgateway-httpbin
   - mesh
@@ -47,7 +47,7 @@ spec:
       port: 443
     route:
     - destination:
-        host: httpbin-mutual-tls.jeremysolarz.app
+        host: SERVICE_URL
         port:
           number: 443
       weight: 100
@@ -57,7 +57,7 @@ kind: DestinationRule
 metadata:
   name: originate-mtls-for-httpbin
 spec:
-  host: httpbin-mutual-tls.jeremysolarz.app
+  host: SERVICE_URL
   trafficPolicy:
     loadBalancer:
       simple: ROUND_ROBIN
@@ -69,4 +69,4 @@ spec:
         clientCertificate: /etc/istio/httpbin-client-certs/tls.crt
         privateKey: /etc/istio/httpbin-client-certs/tls.key
         caCertificates: /etc/istio/httpbin-ca-certs/ca-chain.cert.pem
-        sni: httpbin-mutual-tls.jeremysolarz.app
+        sni: SERVICE_URL

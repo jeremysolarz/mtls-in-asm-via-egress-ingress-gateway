@@ -1,12 +1,21 @@
-../set-project-and-cluster-client.mesh
+../set-project-and-cluster-client.sh
 
 ./clean-up.sh
 
 # folder where certificates are stored created by mtls-go-example
-CERTS_ROOT="../../httpbin-certs"
+CERTS_ROOT="../../certs"
 
 # url of the external service
-SERVICE_URL="httpbin-mutual-tls.jeremysolarz.app"
+SERVICE_URL="$INGRESS_HOST.nip.io"
+
+sed "s/SERVICE_URL/$SERVICE_URL/" gateway-destinationrule-to-egressgateway.yaml.tmpl > gateway-destinationrule-to-egressgateway.yaml
+sed "s/SERVICE_URL/$SERVICE_URL/" httpbin-external.yaml.tmpl > httpbin-external.yaml
+
+sed "s/SERVICE_URL/$SERVICE_URL/" service-entry.yaml.tmpl > service-entry.yaml
+sed "s/SERVICE_URL/$SERVICE_URL/" virtualservice-destinationrule-from-egressgateway.yaml.tmpl > virtualservice-destinationrule-from-egressgateway.yaml
+
+# we just have a sleep.yaml.tmpl file to ignore *.yaml
+sed "s/SERVICE_URL/$SERVICE_URL/" sleep.yaml.tmpl > sleep.yaml
 
 kubectl apply -f httpbin-external.yaml
 
@@ -19,7 +28,7 @@ kubectl create secret generic httpbin-ca-certs --from-file=$CERTS_ROOT/2_interme
 
 kubectl apply -f sleep.yaml
 
-sleep 2
+sleep 5
 export SOURCE_POD=$(kubectl get pod -l app=sleep -o jsonpath={.items..metadata.name})
 echo $SOURCE_POD
 
@@ -42,7 +51,8 @@ kubectl create -n istio-system secret generic httpbin-ca-certs --from-file=$CERT
 kubectl -n istio-system patch --type=json deploy istio-egressgateway -p "$(cat gateway-patch.json)"
 
 sleep 15
-kubectl exec -it -n istio-system $(kubectl -n istio-system get pods -l istio=egressgateway -o jsonpath='{.items[0].metadata.name}') -- ls -al /etc/istio/httpbin-client-certs /etc/istio/httpbin-ca-certs
+kubectl exec -it -n istio-system $(kubectl -n istio-system get pods -l istio=egressgateway -o jsonpath='{.items[0].metadata.name}') \
+  -- ls -al /etc/istio/httpbin-client-certs /etc/istio/httpbin-ca-certs
 
 # patch the egress gateway to mount the secret (aka certificates)
 kubectl apply -f gateway-destinationrule-to-egressgateway.yaml
