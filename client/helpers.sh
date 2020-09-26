@@ -18,9 +18,9 @@ kubectl exec -it -n istio-system "$(kubectl get pod -n istio-system -l app=istio
 # curl with certs from istio-egressgateway
 kubectl exec -it -n istio-system "$(kubectl get pod -n istio-system -l app=istio-egressgateway -o jsonpath={.items..metadata.name})" \
  -- curl -v \
- --cacert /etc/istio/nginx-ca-certs/example.com.crt \
- --cert /etc/istio/nginx-client-certs/tls.crt \
- --key /etc/istio/nginx-client-certs/tls.key \
+ --cacert /etc/istio/httpbin-ca-certs/ca-chain.cert.pem \
+ --cert /etc/istio/httpbin-client-certs/tls.crt \
+ --key /etc/istio/httpbin-client-certs/tls.key \
  https://$SERVICE_URL/status/418
 
 # curl without certificat
