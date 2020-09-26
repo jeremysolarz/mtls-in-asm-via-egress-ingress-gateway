@@ -1,3 +1,5 @@
+../set-project-and-cluster-client.sh
+
 export CERTS_ROOT="../../mysql-eks-certs"
 
 kubectl delete --ignore-not-found=true -n istio-system secret mysql-credential
