@@ -1,3 +1,3 @@
-gcloud config set project ${IGRESS_PROJECT}
+gcloud config set project ${INGRESS_PROJECT}
 
-gcloud container clusters get-credentials ${EGRESS_CLUSTER} --region ${EGRESS_LOCATION} --project ${EGRESS_PROJECT}
+gcloud container clusters get-credentials ${INGRESS_CLUSTER} --region ${INGRESS_LOCATION} --project ${INGRESS_PROJECT}
