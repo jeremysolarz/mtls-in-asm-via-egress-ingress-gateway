@@ -8,6 +8,8 @@ CERTS_ROOT="../../certs"
 export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
 
+kubectl apply -f httpbin.yaml
+
 # url of the external service
 SERVICE_URL="$INGRESS_HOST.nip.io"
 
