@@ -14,10 +14,10 @@ kubectl delete --ignore-not-found=true destinationrule egressgateway-for-httpbin
 kubectl delete --ignore-not-found=true svc sleep
 kubectl delete --ignore-not-found=true deployment sleep
 
-# reset ASM
-istioctl install \
-  -f ../../istio-1.6.8-asm.9/asm/cluster/istio-operator.yaml \
--f ../features.yaml
-
-kubectl get deploy -n istio-system
-kubectl get ns
+## reset ASM
+#istioctl install \
+#  -f ../../istio-1.6.8-asm.9/asm/cluster/istio-operator.yaml \
+#-f ../features.yaml
+#
+#kubectl get deploy -n istio-system
+#kubectl get ns
