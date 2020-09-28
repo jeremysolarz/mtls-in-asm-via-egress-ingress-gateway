@@ -1,5 +1,5 @@
-export PROJECT_ID="YOUR_PROJECT_ID"
-export CLUSTER_NAME="YOUR_CLUSTER_NAME"
+export PROJECT_ID="<your-project-id>"
+export CLUSTER_NAME="<your-cluster-name>"
 export CLUSTER_LOCATION=us-"YOUR_LOCATION"
 export ENVIRON_PROJECT_NUMBER=$(gcloud projects list --format="value(PROJECT_NUMBER)" --filter=PROJECT_ID=$PROJECT_ID)
 export WORKLOAD_POOL=${PROJECT_ID}.svc.id.goog
