@@ -1,3 +1,5 @@
+./server/set-project-and-cluster-server.sh
+
 INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 rm -rf certs
