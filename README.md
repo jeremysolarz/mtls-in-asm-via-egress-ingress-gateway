@@ -10,6 +10,7 @@ gateway.
  - Two Anthos clusters (tested with GKE, Anthos on AWS, Anthos attached cluster EKS K8s 1.16)
  - ASM installed on both clusters (tested with version ASM 1.6 - Istio 1.6.8)
  - Client / Server certificates (tested with [mtls-go-example](https://github.com/nicholasjackson/mtls-go-example))
+ - Have `istioctl` in your $PATH
  
 ## Installation
 
