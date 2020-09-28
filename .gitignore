@@ -10,5 +10,6 @@ istio-1.6.8-asm.9/
 save
 **/*.tar.gz
 server/httpbin-server/*.yaml
+!server/httpbin-server/httpbin.yaml
 client/httpbin-client/*.yaml
 /env-vars
