@@ -81,5 +81,11 @@ cd client/httpbin-client
 ./create-client.sh
 ```               
 
+The `create-client.sh` command automatically runs some checks that the setup works. E.g. 
+`curl -v http://${SERVICE_URL}/status/418` from the "sleeper" pod.
+
 ### TCP encryption with MySQL
 
+#### Create the server side.
+
+#### Create the client side.
