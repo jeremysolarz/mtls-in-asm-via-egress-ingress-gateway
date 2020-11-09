@@ -58,7 +58,7 @@ sleep 15
 kubectl exec -it -n istio-system $(kubectl -n istio-system get pods -l istio=egressgateway -o jsonpath='{.items[0].metadata.name}') \
   -- ls -al /etc/istio/httpbin-client-certs /etc/istio/httpbin-ca-certs
 
-# patch the egress gateway to mount the secret (aka certificates)
+# setup routing for the mysql service inside the mesh
 kubectl apply -f gateway-destinationrule-to-egressgateway.yaml
 
 # now activate the virtualservice that does the routing from the pod to the egress-gateway and from the
