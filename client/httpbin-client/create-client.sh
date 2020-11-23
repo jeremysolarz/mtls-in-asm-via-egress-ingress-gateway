@@ -1,13 +1,13 @@
 ../../server/set-project-and-cluster-server.sh
 
-export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-
 ../set-project-and-cluster-client.sh
 
 ./clean-up.sh
 
 # folder where certificates are stored created by mtls-go-example
 CERTS_ROOT="../../certs"
+
+export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 # url of the external service
 SERVICE_URL="$INGRESS_HOST.nip.io"
@@ -41,8 +41,6 @@ kubectl exec -it $SOURCE_POD -c sleep -- curl -v \
   --cacert /etc/httpbin-ca-certs/ca-chain.cert.pem \
   --cert /etc/httpbin-client-certs/tls.crt \
   --key /etc/httpbin-client-certs/tls.key https://${SERVICE_URL}/status/418
-# sleep 2
-# kubectl exec -it $(kubectl get pod -l app=sleep -o jsonpath={.items..metadata.name}) -c sleep -- curl -k https://${SERVICE_URL}
 
 # create the secrets that hold the certificates for the egress proxy
 kubectl create -n istio-system secret tls httpbin-client-certs \
@@ -67,7 +65,3 @@ kubectl apply -f gateway-destinationrule-to-egressgateway.yaml
 kubectl apply -f virtualservice-destinationrule-from-egressgateway.yaml
 
 kubectl exec -it $SOURCE_POD -c sleep -- curl -v http://${SERVICE_URL}/status/418
-
-# curl  -v ${SERVICE_URL}/status/418
-
-# curl  -v --resolve thisisatest:443:1.1.1.1 thisisatest/status/418
