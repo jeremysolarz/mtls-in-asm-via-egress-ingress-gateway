@@ -24,13 +24,15 @@ Source the newly created file with the appropriate environment variables e.g.
 Afterwards you should have values for the following variables
 
 ```
-EGRESS_PROJECT
-EGRESS_CLUSTER
-EGRESS_LOCATION
+echo "==== EGRESS ===="
+echo $EGRESS_PROJECT
+echo $EGRESS_CLUSTER
+echo $EGRESS_LOCATION
 
-INGRESS_PROJECT
-INGRESS_CLUSTER
-INGRESS_LOCATION
+echo "==== INGRESS ===="
+echo $INGRESS_PROJECT
+echo $INGRESS_CLUSTER
+echo $INGRESS_LOCATION
 ```
 
 Keep in mind that the egress cluster is the client and the ingress cluster is the server side.
@@ -72,7 +74,13 @@ cd server/httpbin-server
 ./create-server.sh
 ```               
 
-After running that command you should see two test calls for httpbin/status/418 e.g. the Teapod service
+After running the above command you should see two test calls for httpbin/status/418 e.g. the Teapod service
+
+Go back to the root directory.
+
+```
+cd ../..
+```               
 
 #### Create the client side.
 
