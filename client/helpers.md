@@ -1,13 +1,21 @@
-export CERTS_ROOT="../../httpbin-certs"
-export SERVICE_URL="httpbin-mutual-tls.jeremysolarz.app"
+export CERTS_ROOT="../certs"
+
+export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+
+# url of the external service
+export SERVICE_URL="$INGRESS_HOST.nip.io"
+
 export MYSQL_SECURE_PORT="16443"
 
+################ GET LOGS ################
 # get logs for istio-egressgateway
 kubectl logs -n istio-system -l app=istio-egressgateway -f
 
-# get logs for istio-prox running inside sleep
+# get logs for istio-proxy running inside sleep
 kubectl logs -l app=sleep -c istio-proxy -f
 
+################ ATTACH ################
 # attach to sleep pod
 kubectl exec -it "$(kubectl get pod -l app=sleep -o jsonpath={.items..metadata.name})" -c sleep -- /bin/sh
 
@@ -15,6 +23,7 @@ kubectl exec -it "$(kubectl get pod -l app=sleep -o jsonpath={.items..metadata.n
 kubectl exec -it -n istio-system "$(kubectl get pod -n istio-system -l app=istio-egressgateway -o jsonpath={.items..metadata.name})" \
   -- /bin/bash
 
+################ CURL ################
 # curl with certs from istio-egressgateway
 kubectl exec -it -n istio-system "$(kubectl get pod -n istio-system -l app=istio-egressgateway -o jsonpath={.items..metadata.name})" \
  -- curl -v \
