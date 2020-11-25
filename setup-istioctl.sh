@@ -7,8 +7,10 @@ case "${uname_out}" in
     *)          exit;
 esac
 
-curl -LO https://storage.googleapis.com/gke-release/asm/istio-${ASM_VERSION}-${OS}.tar.gz
-tar xzf istio-1.6.8-asm.9-osx.tar.gz
+SUFFIX=${ASM_VERSION}-${OS}
 
-cd istio-1.6.8-asm.9
+curl -LO https://storage.googleapis.com/gke-release/asm/istio-${SUFFIX}.tar.gz
+tar xzf istio-${SUFFIX}.tar.gz
+
+cd istio-${SUFFIX}
 export PATH=$PWD/bin:$PATH
