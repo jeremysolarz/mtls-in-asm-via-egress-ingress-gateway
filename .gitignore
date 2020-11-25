@@ -13,3 +13,4 @@ server/httpbin-server/*.yaml
 !server/httpbin-server/httpbin.yaml
 client/httpbin-client/*.yaml
 /env-vars
+local-bin
