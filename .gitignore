@@ -14,3 +14,7 @@ server/httpbin-server/*.yaml
 client/httpbin-client/*.yaml
 /env-vars
 local-bin
+terraform.tfstate
+terraform.tfstate.backup
+.terraform
+terraform.tfvars
