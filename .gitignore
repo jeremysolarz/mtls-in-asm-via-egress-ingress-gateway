@@ -16,5 +16,6 @@ client/httpbin-client/*.yaml
 local-bin
 terraform.tfstate
 terraform.tfstate.backup
+.terraform.tfstate.*
 .terraform
 terraform.tfvars
