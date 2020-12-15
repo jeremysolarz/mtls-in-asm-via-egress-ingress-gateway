@@ -23,6 +23,8 @@ sed "s/SERVICE_URL/$SERVICE_URL/" virtualservice-destinationrule-from-egressgate
 # we just have a sleep.yaml.tmpl file to ignore *.yaml
 sed "s/SERVICE_URL/$SERVICE_URL/" sleep.yaml.tmpl > sleep.yaml
 
+kubectl label namespace default istio-injection=enabled
+
 kubectl apply -f httpbin-external.yaml
 
 # add the service entry to the istio registry
