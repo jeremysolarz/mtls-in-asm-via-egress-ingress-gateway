@@ -1,13 +1,15 @@
 ../../server/set-project-and-cluster-server.sh
 
+# !!! WARNING - DO NOT MOVE !!!
+# get Ingress IP from server side
+export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
 ../set-project-and-cluster-client.sh
 
 ./clean-up.sh
 
 # folder where certificates are stored created by mtls-go-example
 CERTS_ROOT="../../certs"
-
-export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 # url of the external service
 SERVICE_URL="$INGRESS_HOST.nip.io"
@@ -52,7 +54,7 @@ kubectl create -n istio-system secret generic httpbin-ca-certs --from-file=$CERT
 # patch the egress gateway to mount the secret (aka certificates)
 kubectl -n istio-system patch --type=json deploy istio-egressgateway -p "$(cat gateway-patch.json)"
 
-sleep 15
+sleep 30
 kubectl exec -it -n istio-system $(kubectl -n istio-system get pods -l istio=egressgateway -o jsonpath='{.items[0].metadata.name}') \
   -- ls -al /etc/istio/httpbin-client-certs /etc/istio/httpbin-ca-certs
 
