@@ -1,3 +1,6 @@
+The following scripts can be used for troubleshooting your setup
+
+```
 export CERTS_ROOT="../certs"
 
 export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
@@ -50,3 +53,4 @@ curl https://$SERVICE_URL:$MYSQL_SECURE_PORT \
   --cacert $CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem \
   --cert $CERTS_ROOT/4_client/certs/$SERVICE_URL.cert.pem \
   --key $CERTS_ROOT/4_client/private/$SERVICE_URL.key.pem
+```
