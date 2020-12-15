@@ -1,15 +1,19 @@
-../../server/set-project-and-cluster-server.sh
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. $DIR/../../env-vars
+
+$DIR/../../server/set-project-and-cluster-server.sh
 
 # !!! WARNING - DO NOT MOVE !!!
 # get Ingress IP from server side
 export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
-../set-project-and-cluster-client.sh
+$DIR/../set-project-and-cluster-client.sh
 
-./clean-up.sh
+$DIR/./clean-up.sh
 
 # folder where certificates are stored created by mtls-go-example
-CERTS_ROOT="../../certs"
+CERTS_ROOT="$DIR/../../certs"
 
 # url of the external service
 SERVICE_URL="$INGRESS_HOST.nip.io"

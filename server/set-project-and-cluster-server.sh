@@ -1,4 +1,6 @@
-. ../env-vars
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. $DIR/../env-vars
 
 gcloud config set project ${INGRESS_PROJECT}
 

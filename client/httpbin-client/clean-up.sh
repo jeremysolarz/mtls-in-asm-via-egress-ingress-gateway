@@ -1,4 +1,8 @@
-../set-project-and-cluster-client.sh
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. $DIR/../../env-vars
+
+$DIR/../set-project-and-cluster-client.sh
 
 kubectl delete --ignore-not-found=true secret httpbin-server-certs httpbin-ca-certs -n mesh-external
 kubectl delete --ignore-not-found=true secret httpbin-client-certs httpbin-ca-certs

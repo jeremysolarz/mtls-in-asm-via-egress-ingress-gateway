@@ -1,11 +1,13 @@
-. ../../env-vars
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-../set-project-and-cluster-server.sh
+. $DIR/../../env-vars
 
-./clean-up.sh
+$DIR/../set-project-and-cluster-server.sh
+
+$DIR/./clean-up.sh
 
 # folder where certificates are stored created by mtls-go-example
-CERTS_ROOT="../../certs"
+CERTS_ROOT="$DIR/../../certs"
 
 export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
