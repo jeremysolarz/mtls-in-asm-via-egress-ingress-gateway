@@ -14,23 +14,6 @@
  * limitations under the License.
  */
 
-
-/**
- * Copyright 2018 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 provider "google" {
   region  = var.region
 }
@@ -107,8 +90,7 @@ EOF
 
 # client cluster
 
-# todo rename to client-cluster
-module "gke" {
+module "client-cluster" {
   source                  = "terraform-google-modules/kubernetes-engine/google//"
   project_id              = var.project_id
   name                    = local.client_cluster_name
@@ -134,33 +116,28 @@ module "gke" {
   ]
 }
 
-# todo rename to client-cluster-asm
-module "asm" {
-  # todo change to github.com/jeremysolarz/terraform-google-modules/kubernetes-engine/google//modules/asm
-  source           = "terraform-google-modules/kubernetes-engine/google//modules/asm"
-  cluster_name     = module.gke.name
-  cluster_endpoint = module.gke.endpoint
+module "client-cluster-asm" {
+  source           = "github.com/jeremysolarz/terraform-google-kubernetes-engine.git//modules/asm"
+  cluster_name     = module.client-cluster.name
+  cluster_endpoint = module.client-cluster.endpoint
   project_id       = var.project_id
-  location         = module.gke.location
+  location         = module.client-cluster.location
 }
 
 data "google_client_config" "default" {
 }
 
-# todo rename to client-cluster-hub
-module "hub" {
+module "client-cluster-hub" {
   source                  = "terraform-google-modules/kubernetes-engine/google//modules/hub"
   project_id              = var.project_id
-  location                = module.gke.location
-  cluster_name            = module.gke.name
-  cluster_endpoint        = module.gke.endpoint
-  # todo add prefix for "${local.client_cluster_name}-asm-membership"
-  gke_hub_membership_name = "gke-asm-membership"
-  # todo add Service Account for client (don't use default)
+  location                = module.client-cluster.location
+  cluster_name            = module.client-cluster.name
+  cluster_endpoint        = module.client-cluster.endpoint
+  gke_hub_membership_name = "${local.client_cluster_name}-asm-membership"
+  gke_hub_sa_name         = "${local.client_cluster_name}-gke-hub-sa"
 }
 
 # server cluster
-
 module "server-cluster" {
   source                  = "terraform-google-modules/kubernetes-engine/google//"
   project_id              = var.project_id
@@ -188,7 +165,7 @@ module "server-cluster" {
 }
 
 module "server-cluster-asm" {
-  source           = "terraform-google-modules/kubernetes-engine/google//modules/asm"
+  source           = "github.com/jeremysolarz/terraform-google-kubernetes-engine.git//modules/asm"
 
   project_id       = var.project_id
 

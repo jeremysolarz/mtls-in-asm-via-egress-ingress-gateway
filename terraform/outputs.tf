@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-output "kubernetes_endpoint" {
+output "client_kubernetes_endpoint" {
   sensitive = true
-  value     = module.gke.endpoint
+  value     = module.client-cluster.endpoint
+}
+
+output "client_ca_certificate" {
+  value = module.client-cluster.ca_certificate
+}
+
+output "client_service_account" {
+  description = "The default service account used for running nodes."
+  value       = module.client-cluster.service_account
 }
 
 output "client_token" {
@@ -24,11 +33,16 @@ output "client_token" {
   value     = base64encode(data.google_client_config.default.access_token)
 }
 
-output "ca_certificate" {
-  value = module.gke.ca_certificate
+output "server_kubernetes_endpoint" {
+  sensitive = true
+  value     = module.server-cluster.endpoint
 }
 
-output "service_account" {
+output "server_ca_certificate" {
+  value = module.server-cluster.ca_certificate
+}
+
+output "server_service_account" {
   description = "The default service account used for running nodes."
-  value       = module.gke.service_account
+  value       = module.server-cluster.service_account
 }
