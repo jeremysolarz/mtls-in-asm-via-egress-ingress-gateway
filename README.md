@@ -35,6 +35,8 @@ terraform init
 terraform plan
 
 terraform apply --auto-approve
+
+cd ..
 ```
 
 ### Environment setup
@@ -113,7 +115,34 @@ cd server/httpbin-server
 ./create-server.sh
 ```               
 
-After running the above command you should see two test calls for httpbin/status/418 e.g. the Teapod service
+After running the above command you should see two test calls for httpbin/status/418 e.g. the Teapod service resulting in
+a output like this.
+
+```
+    -=[ teapot ]=-
+
+       _...._
+     .'  _ _ `.
+    | ."` ^ `". _,
+    \_;`"---"`|//
+      |       ;/
+      \_     _/
+        `"""`
+```
+
+Now as a final check see if the sidecar proxy was injected properly into the server.
+
+Run
+```
+kubectl get pods -n default
+```
+
+You should see output similar to this:
+
+```
+NAME                       READY   STATUS    RESTARTS   AGE
+httpbin-779c54bf49-4tg9h   2/2     Running   0          71s
+```
 
 Go back to the root directory.
 
@@ -123,13 +152,41 @@ cd ../..
 
 ##### Create the client side.
 
+The client creates a sleeper pod (`image: tutum/curl) that calls the httpbin server side.
+
 ```
 cd client/httpbin-client
 ./create-client.sh
 ```               
 
+Go back to the root directory.
+
+```
+cd ../..
+```     
+
 The `create-client.sh` command automatically runs some checks that the setup works. E.g. 
 `curl -v http://${SERVICE_URL}/status/418` from the "sleeper" pod.
+
+Once you have connected to the sleeper pod you can also run a check via it's alias name
+
+```
+curl -v http://httpbin-external/status/418
+```
+
+### Bonus / Troubleshooting
+
+The see what's going on between client and server you can use the following helper scripts:
+
+#### Client
+
+Show the proxy logs of the sleeper pod:
+
+`client/httpbin-client/get-logs-from-sleep-proxy.sh`
+
+Show the logs of the egress proxy:
+
+`client/get-logs-from-egress.sh`
 
 #### TCP encryption with MySQL
 
