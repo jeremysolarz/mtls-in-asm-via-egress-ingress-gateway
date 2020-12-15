@@ -1,3 +1,5 @@
+. ../../env-vars
+
 ../set-project-and-cluster-server.sh
 
 ./clean-up.sh

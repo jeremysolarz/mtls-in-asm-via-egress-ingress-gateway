@@ -1,3 +1,5 @@
+. ../../env-vars
+
 ../set-project-and-cluster-server.sh
 
 kubectl delete --ignore-not-found=true gateway gateway-mutual
