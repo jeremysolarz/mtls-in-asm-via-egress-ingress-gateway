@@ -13,6 +13,8 @@ export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressga
 # url of the external service
 SERVICE_URL="$INGRESS_HOST.nip.io"
 
+kubectl label namespace default istio-injection=enabled
+
 kubectl apply -f httpbin.yaml
 
 kubectl create -n istio-system secret generic httpbin-credential \
