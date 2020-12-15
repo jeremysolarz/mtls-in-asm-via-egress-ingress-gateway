@@ -9,9 +9,12 @@ istio-1.6.8-asm.9/
 *.tar.gz
 save
 **/*.tar.gz
-server/httpbin-server/*.yaml
 !server/httpbin-server/httpbin.yaml
+server/httpbin-server/*.yaml
 client/httpbin-client/*.yaml
+!server/mysql-server/mysql.yaml
+server/mysql-server/*.yaml
+client/mysql-client/*.yaml
 /env-vars
 local-bin
 terraform.tfstate
