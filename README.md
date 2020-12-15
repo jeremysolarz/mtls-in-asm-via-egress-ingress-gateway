@@ -62,7 +62,7 @@ First you need to create the certificates for client / server endpoints. The fol
  - Generation a new directory (./certs) with the keys will be created. 
 
 ```
-create-keys.sh
+./create-keys.sh
 ```
 
 ### HTTP encryption with HttpBin   
