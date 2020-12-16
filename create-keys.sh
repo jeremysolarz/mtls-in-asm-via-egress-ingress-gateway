@@ -4,7 +4,7 @@ INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonp
 
 rm -rf certs
 mkdir certs
-[ ! -d mtls-go-example ]  && git clone git@github.com:nicholasjackson/mtls-go-example.git
+[ ! -d mtls-go-example ]  && git clone https://github.com/nicholasjackson/mtls-go-example.git
 cd mtls-go-example
 # delete old certs
 rm -rf 1_root 2_intermediate 3_application 4_client
