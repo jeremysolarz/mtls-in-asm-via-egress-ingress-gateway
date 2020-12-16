@@ -5,6 +5,7 @@ metadata:
 spec:
   ports:
   - port: 3306
+    name: mysql
   selector:
     app: mysql
 ---
