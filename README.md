@@ -106,7 +106,12 @@ First you need to create the certificates for client / server endpoints. The fol
 ./create-keys.sh
 ```
 
+### Create client / server (HTTP & MySQL)
+
 #### HTTP encryption with HttpBin   
+
+The following sections deploy a httpbin server on the server cluster and a sleeper pod (curl capable) on the client 
+cluster. Encrypted communication will happen transparently for client / server via Egress / Ingress Gateways.
 
 ##### Create the server side.
 
@@ -192,4 +197,35 @@ Show the logs of the egress proxy:
 
 ##### Create the server side.
 
+```
+cd server/mysql-server
+./create-server.sh
+```               
+
+Now as a final check see if the sidecar proxy was injected properly into the server.
+
+Run
+```
+kubectl get pods -n default
+```
+
+You should see output similar to this:
+
+```
+NAME                       READY   STATUS    RESTARTS   AGE
+mysql-5bf4c56867-sjs7m   2/2     Running   0          71s
+```
+
+Go back to the root directory.
+
+```
+cd ../..
+```         
+
+After running the above command you should 
+
 ##### Create the client side.
+```
+cd client/mysql-client
+./create-client.sh
+```   
