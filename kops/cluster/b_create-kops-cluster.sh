@@ -3,10 +3,11 @@
 ## TF vars
 export PROJECT='${project}'
 export GCPZONE='${zone}'
+export KOPS_FEATURE_FLAGS='${kops-gce}'
 ###
 
 # Make those eventually configureable - but for now they are fixed
-export KOPS_FEATURE_FLAGS=AlphaAllowGCE
+
 #source ../env.txt
 echo "Installing and running kops clsuter now"
 kops create cluster mtls.k8s.local --zones $GCPZONE --state $PROJECT-kops-clusters/ --project=$PROJECT
