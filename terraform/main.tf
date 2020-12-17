@@ -253,12 +253,10 @@ resource "null_resource" "kops-register-cluster" {
   }
 }
 
-resource "null_resource" "kops-output" {
 # output the token int output vars  
-  data "local_file" "token" {
+data "local_file" "kops_token" {
     depends_on = [null_resource.kops-register-cluster]
     filename = "kops-ksa.token"
-  } 
-}
+} 
 
   

@@ -50,5 +50,5 @@ output "client_token" {
 output "kops_token" {
   description = "The server cluster token for Cloud Consle"
   sensitive = true
-  value     = base64encode(null_resource.kops-output.data.local_file.token.content)
+  value     = base64encode(data.local_file.kops_token.content)
 } 
