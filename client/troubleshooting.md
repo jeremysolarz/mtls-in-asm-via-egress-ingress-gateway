@@ -53,4 +53,20 @@ curl https://$SERVICE_URL:$MYSQL_SECURE_PORT \
   --cacert $CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem \
   --cert $CERTS_ROOT/4_client/certs/$SERVICE_URL.cert.pem \
   --key $CERTS_ROOT/4_client/private/$SERVICE_URL.key.pem
+
+echo "curl -vvv https://$SERVICE_URL:$MYSQL_SECURE_PORT \
+  --cacert $CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem \
+  --cert $CERTS_ROOT/4_client/certs/$SERVICE_URL.cert.pem \
+  --key $CERTS_ROOT/4_client/private/$SERVICE_URL.key.pem"
+
+echo "curl -vvv https://$SERVICE_URL:$MYSQL_SECURE_PORT \
+  --cacert /etc/istio/mysql-ca-certs/ca-chain.cert.pem \
+  --cert /etc/istio/mysql-client-certs/tls.crt \
+  --key /etc/istio/mysql-client-certs/tls.key"
+
+kubectl --context gke_jsolarz-sandbox_us-central1-c_client-cluster run -it \
+  --image=mysql:5.6 mysql-client --restart=Never --rm -- /bin/bash
+
+kubectl --context gke_jsolarz-sandbox_us-central1-c_client-cluster run -it \
+  --image=mysql:5.6 mysql-client --restart=Never --rm -- mysql -h 35.239.250.140.nip.io -pyougottoknowme
 ```
