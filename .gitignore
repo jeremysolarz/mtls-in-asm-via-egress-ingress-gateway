@@ -5,7 +5,7 @@ mysql-eks-certs/
 mtls-go-example
 .DS_Store
 .idea/
-istio-1.6.8-asm.9/
+istio-*-asm.*/
 *.tar.gz
 save
 **/*.tar.gz
