@@ -191,12 +191,23 @@ module "server-cluster-hub" {
 } 
 */
 # kOps Server
-resource "null_resource" "kops-install" {
-
-  data "install-kops" "project" {
+data "install-kops" "project" {
     template = file("kops/cluster/a_install-kops.sh")
     project_id = var.project_id
 } 
+
+data "template_file" "kops-create" {
+    template = file("kops/cluster/b_create-kops-cluster.sh")
+    project_id = var.project_id
+    zone = var.zones[0]
+}
+data "template_file" "kops-register" {
+    template = file("kops/cluster/c_register.sh")
+    project_id = var.project_id
+  } 
+
+resource "null_resource" "kops-install" {
+  
   # render install file with TF vars
   provisioner "file" {
     content     = data.install-kops.project.rendered
@@ -209,13 +220,9 @@ resource "null_resource" "kops-install" {
   }
 }
 
+
 resource "null_resource" "kops-create-cluster" {
-  depends_on = [kops-install]
-  data "template_file" "kops-create" {
-    template = file("kops/cluster/b_create-kops-cluster.sh")
-    project_id = var.project_id
-    zone = var.zones[0]
-} 
+  depends_on = [kops-install] 
   # render create script with TF vars
   provisioner "file" {
     content     = data.template_file.kops-create.rendered
@@ -230,10 +237,6 @@ resource "null_resource" "kops-create-cluster" {
 
 resource "null_resource" "kops-register-cluster" {
   depends_on = [kops-create-cluster]
-  data "template_file" "kops-register" {
-    template = file("kops/cluster/c_register.sh")
-    project_id = var.project_id
-  } 
   # render register script with TF vars
   provisioner "file" {
     content     = data.template_file.kops-register.rendered
