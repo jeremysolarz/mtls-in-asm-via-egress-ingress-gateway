@@ -192,21 +192,21 @@ module "server-cluster-hub" {
 */
 # kOps Server
 data "template_file" "project" {
-    template = file("kops/cluster/a_install-kops.sh")
+    template = file("../kops/cluster/a_install-kops.sh")
     vars ={
        project = var.project_id
     }
 } 
 
 data "template_file" "kops-create" {
-    template = file("kops/cluster/b_create-kops-cluster.sh")
+    template = file("../kops/cluster/b_create-kops-cluster.sh")
     vars = {
     project = var.project_id
     zone = var.zones[0]
     }
 }
 data "template_file" "kops-register" {
-    template = file("kops/cluster/c_register.sh")
+    template = file("../kops/cluster/c_register.sh")
     vars = {
     project = var.project_id
     }
