@@ -191,7 +191,7 @@ module "server-cluster-hub" {
 } 
 */
 # kOps Server
-data "install-kops" "project" {
+data "template_file" "project" {
     template = file("kops/cluster/a_install-kops.sh")
     project_id = var.project_id
 } 
