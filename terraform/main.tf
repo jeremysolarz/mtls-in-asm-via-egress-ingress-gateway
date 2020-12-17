@@ -193,24 +193,29 @@ module "server-cluster-hub" {
 # kOps Server
 data "template_file" "project" {
     template = file("kops/cluster/a_install-kops.sh")
-    project = var.project_id
+    vars ={
+       project = var.project_id
+    }
 } 
 
 data "template_file" "kops-create" {
     template = file("kops/cluster/b_create-kops-cluster.sh")
+    vars = {
     project = var.project_id
     zone = var.zones[0]
+    }
 }
 data "template_file" "kops-register" {
     template = file("kops/cluster/c_register.sh")
+    vars = {
     project = var.project_id
+    }
   } 
 
 resource "null_resource" "kops-install" {
-  
   # render install file with TF vars
   provisioner "file" {
-    content     = data.install-kops.project.rendered
+    content     = data.template_file.project.rendered
     destination = "install-kops.sh"
   }
   # download and deploy kops
@@ -219,7 +224,6 @@ resource "null_resource" "kops-install" {
     command = "./a_install-kops.sh"
   }
 }
-
 
 resource "null_resource" "kops-create-cluster" {
   depends_on = [null_resource.kops-install] 
