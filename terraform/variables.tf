@@ -26,3 +26,8 @@ variable "zones" {
   type = list(string)
   description = "The zone to host the cluster in (required if is a zonal cluster)"
 }
+
+variable "kops-gce" {
+  type string
+  value "AlphaAllowGCE"
+}

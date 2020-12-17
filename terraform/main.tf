@@ -201,14 +201,15 @@ data "template_file" "project" {
 data "template_file" "kops-create" {
     template = file("../kops/cluster/b_create-kops-cluster.sh")
     vars = {
-    project = var.project_id
-    zone = var.zones[0]
+      project = var.project_id
+      zone = var.zones[0]
+      kops-gce = var.kops-gce
     }
 }
 data "template_file" "kops-register" {
     template = file("../kops/cluster/c_register.sh")
     vars = {
-    project = var.project_id
+      project = var.project_id
     }
   } 
 
