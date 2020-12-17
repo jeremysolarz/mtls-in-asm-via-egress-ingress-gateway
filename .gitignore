@@ -1,5 +1,4 @@
 certs
-certs.bak
 httpbin-certs
 mysql-certs
 mysql-eks-certs/
