@@ -42,5 +42,5 @@ kubectl create clusterrolebinding admin-user-binding \
 SECRET_NAME=$(kubectl get serviceaccount -n kube-system admin-user \
   -o jsonpath='{$.secrets[0].name}')
 echo "Copy this token and use it to login to your cluster in cloud console"
-echo $(kubectl get secret -n kube-system ${SECRET_NAME} -o jsonpath='{$.data.token}' \
+echo $(kubectl get secret -n kube-system $SECRET_NAME -o jsonpath='{$.data.token}' \
   | base64 -d | sed $'s/$/\\\n/g') >> kops-ksa.token
