@@ -11,7 +11,7 @@ spec:
         name: tls
         protocol: TLS
       hosts:
-        - httpbin-mutual-tls.jeremysolarz.app
+        - 35.239.250.140.nip.io
       tls:
         mode: ISTIO_MUTUAL
 ---
@@ -31,4 +31,4 @@ spec:
               number: 15443
             tls:
               mode: ISTIO_MUTUAL
-              sni: httpbin-mutual-tls.jeremysolarz.app
+              sni: 35.239.250.140.nip.io

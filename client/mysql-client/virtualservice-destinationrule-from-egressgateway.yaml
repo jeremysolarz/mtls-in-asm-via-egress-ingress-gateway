@@ -4,7 +4,7 @@ metadata:
   name: direct-mysql-through-egress-gateway
 spec:
   hosts:
-    - httpbin-mutual-tls.jeremysolarz.app
+    - 35.239.250.140.nip.io
   gateways:
     - istio-egressgateway-mysql
     - mesh
@@ -26,9 +26,9 @@ spec:
           port: 15443
       route:
         - destination:
-            host: httpbin-mutual-tls.jeremysolarz.app
+            host: 35.239.250.140.nip.io
             port:
-              number: 16443
+              number: 13306
           weight: 100
 ---
 apiVersion: networking.istio.io/v1alpha3
@@ -36,16 +36,16 @@ kind: DestinationRule
 metadata:
   name: originate-mtls-for-mysql
 spec:
-  host: httpbin-mutual-tls.jeremysolarz.app
+  host: 35.239.250.140.nip.io
   trafficPolicy:
     loadBalancer:
       simple: ROUND_ROBIN
     portLevelSettings:
       - port:
-          number: 16443
+          number: 13306
         tls:
           mode: MUTUAL
           clientCertificate: /etc/istio/mysql-client-certs/tls.crt
           privateKey: /etc/istio/mysql-client-certs/tls.key
           caCertificates: /etc/istio/mysql-ca-certs/ca-chain.cert.pem
-          sni: httpbin-mutual-tls.jeremysolarz.app
+          sni: 35.239.250.140.nip.io
