@@ -138,11 +138,12 @@ module "client-cluster-hub" {
 }
 
 # server cluster
+/*
 module "server-cluster" {
   source                  = "terraform-google-modules/kubernetes-engine/google//"
   project_id              = var.project_id
-  name                    = local.server_cluster_name
-  regional                = false
+ name                    = local.server_cluster_name
+ regional                = false
   region                  = var.region
   zones                   = var.zones
   release_channel         = "REGULAR"
@@ -178,7 +179,7 @@ module "server-cluster-asm" {
 data "google_client_config" "default" {
 }
 */
-
+/*
 module "server-cluster-hub" {
   source                  = "terraform-google-modules/kubernetes-engine/google//modules/hub"
   project_id              = var.project_id
@@ -187,4 +188,70 @@ module "server-cluster-hub" {
   cluster_endpoint        = module.server-cluster.endpoint
   gke_hub_membership_name = "${local.server_cluster_name}-asm-membership"
   gke_hub_sa_name         = "${local.server_cluster_name}-gke-hub-sa"
+} 
+*/
+# kOps Server
+resource "null_resource" "kops-install" {
+
+  data "install-kops" "project" {
+    template = file("kops/cluster/a_install-kops.sh")
+    project_id = var.project_id
+} 
+  # render install file with TF vars
+  provisioner "file" {
+    content     = data.install-kops.project.rendered
+    destination = "install-kops.sh"
+  }
+  # download and deploy kops
+  provisioner "local-exec" {
+    #when    = destroy
+    command = "./a_install-kops.sh"
+  }
 }
+
+resource "null_resource" "kops-create-cluster" {
+  depends_on = [kops-install]
+  data "template_file" "kops-create" {
+    template = file("kops/cluster/b_create-kops-cluster.sh")
+    project_id = var.project_id
+    zone = var.zones[0]
+} 
+  # render create script with TF vars
+  provisioner "file" {
+    content     = data.template_file.kops-create.rendered
+    destination = "create-kops-cluster.sh"
+  }
+# download and deploy kops
+  provisioner "local-exec" {
+    #when    = destroy
+    command = "./create-kops-cluster.sh"
+  }
+}
+
+resource "null_resource" "kops-register-cluster" {
+  depends_on = [kops-create-cluster]
+  data "template_file" "kops-register" {
+    template = file("kops/cluster/c_register.sh")
+    project_id = var.project_id
+  } 
+  # render register script with TF vars
+  provisioner "file" {
+    content     = data.template_file.kops-register.rendered
+    destination = "register.sh"
+  }
+# download and deploy kops
+  provisioner "local-exec" {
+    #when    = destroy
+    command = "./register.sh"
+  }
+}
+
+resource "null_resource" "kops-output" {
+# output the token int output vars  
+  data "local_file" "token" {
+    depends_on = [kops-register-cluster]
+    filename = "kops-ksa.token"
+  } 
+}
+
+  

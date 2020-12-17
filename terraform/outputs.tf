@@ -46,3 +46,9 @@ output "server_service_account" {
   description = "The default service account used for running nodes."
   value       = module.server-cluster.service_account
 }
+
+output "kops_token" {
+  description = "The server cluster token for Cloud Consle"
+  sensitive = true
+  value     = base64encode(resource.null_resource.kops-output.data.local_file.token.content)
+} 
