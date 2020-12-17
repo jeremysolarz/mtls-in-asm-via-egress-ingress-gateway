@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Terraform vars
-export PROJECT='${project_id}'
+export PROJECT='${project}'
 ##
 
 uname_out="$(uname -s)"

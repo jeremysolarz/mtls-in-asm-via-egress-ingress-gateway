@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## TF vars
-export PROJECT='${project-id}'
+export PROJECT='${project}'
 export GCPZONE='${zone}'
 ###
 

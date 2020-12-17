@@ -193,17 +193,17 @@ module "server-cluster-hub" {
 # kOps Server
 data "template_file" "project" {
     template = file("kops/cluster/a_install-kops.sh")
-    project_id = var.project_id
+    project = var.project_id
 } 
 
 data "template_file" "kops-create" {
     template = file("kops/cluster/b_create-kops-cluster.sh")
-    project_id = var.project_id
+    project = var.project_id
     zone = var.zones[0]
 }
 data "template_file" "kops-register" {
     template = file("kops/cluster/c_register.sh")
-    project_id = var.project_id
+    project = var.project_id
   } 
 
 resource "null_resource" "kops-install" {
@@ -222,7 +222,7 @@ resource "null_resource" "kops-install" {
 
 
 resource "null_resource" "kops-create-cluster" {
-  depends_on = [kops-install] 
+  depends_on = [null_resource.kops-install] 
   # render create script with TF vars
   provisioner "file" {
     content     = data.template_file.kops-create.rendered
@@ -236,7 +236,7 @@ resource "null_resource" "kops-create-cluster" {
 }
 
 resource "null_resource" "kops-register-cluster" {
-  depends_on = [kops-create-cluster]
+  depends_on = [null_resource.kops-create-cluster]
   # render register script with TF vars
   provisioner "file" {
     content     = data.template_file.kops-register.rendered
@@ -252,7 +252,7 @@ resource "null_resource" "kops-register-cluster" {
 resource "null_resource" "kops-output" {
 # output the token int output vars  
   data "local_file" "token" {
-    depends_on = [kops-register-cluster]
+    depends_on = [null_resource.kops-register-cluster]
     filename = "kops-ksa.token"
   } 
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 #source env.txt
 ## TF vars
-export PROJECT='${project-id}'
+export PROJECT='${project}'
 ##
 
 echo -e "This will enable the Anthos APIs in this project $PROJECT!\n 
