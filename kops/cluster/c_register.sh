@@ -1,5 +1,5 @@
 #!/bin/bash
-#source env.txt
+#source env-vars
 ## TF vars
 export PROJECT='${project}'
 ##
