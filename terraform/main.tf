@@ -25,6 +25,8 @@ locals {
   server_cluster_name   = "server-cluster"
   server_cluster_subnet = "server-cluster-subnet"
 
+  # the vpc_name is currently hardcoded in the FW destroy
+  # due to no variable usage in provisioners
   vpc_name              = "example-vpc"
 }
 
@@ -125,6 +127,20 @@ module "client-cluster-hub" {
   cluster_endpoint        = module.client-cluster.endpoint
   gke_hub_membership_name = "${local.client_cluster_name}-asm-membership"
   gke_hub_sa_name         = "${local.client_cluster_name}-gke-hub-sa"
+}
+
+# destroy gke fw rules, otherwise you can not delete the vpc
+resource "null_resource" "delete_gke_fw_rules" {
+
+  depends_on = [module.vpc]
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOF
+gcloud compute firewall-rules list --filter='name=example_vpc' \
+  --format='value(name)' | xargs -I {} gcloud compute firewall-rules delete {} -q"
+EOF
+  }
 }
 
 # kOps Server
