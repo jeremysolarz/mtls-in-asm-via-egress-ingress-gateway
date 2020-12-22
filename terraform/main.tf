@@ -33,16 +33,6 @@ data "google_project" "project" {
 }
 
 module "vpc" {
-  # destroy gke fw rules, otherwise you can not delete the vpc
-  /*
-  provisioner "local-exec" {
-    when    = destroy
-    command = <<EOF
-gcloud compute firewall-rules list --filter='name=${local.vpc_name}' \
-  --format='value(name)' | xargs -I {} gcloud compute firewall-rules delete {} -q"
-EOF
-  }
-  */
 
   source = "terraform-google-modules/network/google"
 
@@ -137,59 +127,6 @@ module "client-cluster-hub" {
   gke_hub_sa_name         = "${local.client_cluster_name}-gke-hub-sa"
 }
 
-# server cluster
-/*
-module "server-cluster" {
-  source                  = "terraform-google-modules/kubernetes-engine/google//"
-  project_id              = var.project_id
- name                    = local.server_cluster_name
- regional                = false
-  region                  = var.region
-  zones                   = var.zones
-  release_channel         = "REGULAR"
-  network                 = module.vpc.network_name
-  subnetwork              = local.server_cluster_subnet
-  ip_range_pods           = "${local.server_cluster_subnet}-pods"
-  ip_range_services       = "${local.server_cluster_subnet}-services"
-  network_policy          = false
-  cluster_resource_labels = { "mesh_id" : "proj-${data.google_project.project.number}" }
-  node_pools = [
-    {
-      name         = "asm-node-pool"
-      autoscaling  = false
-      auto_upgrade = true
-      # ASM requires minimum 4 nodes and e2-standard-4
-      node_count   = 4
-      machine_type = "e2-standard-4"
-    },
-  ]
-}
-
-module "server-cluster-asm" {
-  source           = "github.com/jeremysolarz/terraform-google-kubernetes-engine.git//modules/asm"
-
-  project_id       = var.project_id
-
-  cluster_name     = module.server-cluster.name
-  cluster_endpoint = module.server-cluster.endpoint
-  location         = module.server-cluster.location
-}
-
-/** TODO add back once cluster creation is in separate files
-data "google_client_config" "default" {
-}
-*/
-/*
-module "server-cluster-hub" {
-  source                  = "terraform-google-modules/kubernetes-engine/google//modules/hub"
-  project_id              = var.project_id
-  location                = module.server-cluster.location
-  cluster_name            = module.server-cluster.name
-  cluster_endpoint        = module.server-cluster.endpoint
-  gke_hub_membership_name = "${local.server_cluster_name}-asm-membership"
-  gke_hub_sa_name         = "${local.server_cluster_name}-gke-hub-sa"
-} 
-*/
 # kOps Server
 data "template_file" "project" {
     template = file("../kops/cluster/a_install-kops.sh")
@@ -258,6 +195,5 @@ resource "null_resource" "kops-register-cluster" {
 data "local_file" "kops_token" {
     depends_on = [null_resource.kops-register-cluster]
     filename = "kops-ksa.token"
-} 
-
+}
   
