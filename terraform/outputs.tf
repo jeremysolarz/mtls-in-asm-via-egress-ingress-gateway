@@ -33,20 +33,6 @@ output "client_token" {
   value     = base64encode(data.google_client_config.default.access_token)
 }
 
-#output "server_kubernetes_endpoint" {
-#  sensitive = true
-#  value     = module.server-cluster.endpoint
-#}
-
-#output "server_ca_certificate" {
-#  value = module.server-cluster.ca_certificate
-#}
-
-#output "server_service_account" {
-#  description = "The default service account used for running nodes."
-#  value       = module.server-cluster.service_account
-#}
-
 output "kops_token" {
   description = "The server cluster token for Cloud Console"
   sensitive = true
