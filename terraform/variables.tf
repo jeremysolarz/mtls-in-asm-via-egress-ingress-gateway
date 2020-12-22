@@ -28,6 +28,6 @@ variable "zones" {
 }
 
 variable "kops-gce" {
-  type string
-  value "AlphaAllowGCE"
+  type = string
+  default = "AlphaAllowGCE"
 }
