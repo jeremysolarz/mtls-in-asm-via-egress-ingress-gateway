@@ -94,7 +94,7 @@ Ingress IP as DNS name e.g. 192.168.0.1.nip.io resolves to 192.168.0.1
 
 ### ASM Configuration
 
-In the following sections we will showcase mTLS encryption for both HTTP and TCP endpoints.
+In the following sections we fill showcase mTLS encryption for both HTTP and TCP endpoints.
 
 First you need to create the certificates for client / server endpoints. The following command will
 
