@@ -170,12 +170,12 @@ resource "null_resource" "kops-install" {
   # render install file with TF vars
   provisioner "file" {
     content     = data.template_file.install-kops.rendered
-    destination = "install-kops.sh"
+    destination = "/tmp/install-kops.sh"
   }
   # download and deploy kops
   provisioner "local-exec" {
     #when    = destroy
-    command = "./install-kops.sh"
+    command = "/tmp/install-kops.sh"
   }
 }
 
@@ -184,12 +184,12 @@ resource "null_resource" "kops-create-cluster" {
   # render create script with TF vars
   provisioner "file" {
     content     = data.template_file.kops-create.rendered
-    destination = "create-kops-cluster.sh"
+    destination = "/tmp/create-kops-cluster.sh"
   }
 # download and deploy kops
   provisioner "local-exec" {
     #when    = destroy
-    command = "./create-kops-cluster.sh"
+    command = "/tmp/create-kops-cluster.sh"
   }
 }
 
@@ -198,12 +198,12 @@ resource "null_resource" "kops-register-cluster" {
   # render register script with TF vars
   provisioner "file" {
     content     = data.template_file.kops-register.rendered
-    destination = "register.sh"
+    destination = "/tmp/register.sh"
   }
 # download and deploy kops
   provisioner "local-exec" {
     #when    = destroy
-    command = "./register.sh"
+    command = "/tmp/register.sh"
   }
 }
 
