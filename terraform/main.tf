@@ -144,7 +144,7 @@ EOF
 }
 
 # kOps Server
-data "template_file" "project" {
+data "template_file" "install-kops" {
     template = file("../kops/cluster/a_install-kops.sh")
     vars ={
        project = var.project_id
@@ -169,13 +169,13 @@ data "template_file" "kops-register" {
 resource "null_resource" "kops-install" {
   # render install file with TF vars
   provisioner "file" {
-    content     = data.template_file.project.rendered
+    content     = data.template_file.install-kops.rendered
     destination = "install-kops.sh"
   }
   # download and deploy kops
   provisioner "local-exec" {
     #when    = destroy
-    command = "./a_install-kops.sh"
+    command = "./install-kops.sh"
   }
 }
 
