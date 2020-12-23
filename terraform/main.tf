@@ -159,22 +159,19 @@ data "template_file" "kops-create" {
       kops-gce = var.kops-gce
     }
 }
-data "template_file" "kops-register" {
+data "template_file" "kdata "template_file" "kops-register" {
     template = file("../kops/cluster/c_register.sh")
     vars = {
       project = var.project_id
     }
   } 
 
-resource "null_resource" "kops-install" {
+resource "local_file" "kops-install" {
   depends_on = [data.template_file.install-kops]
-
   # render install file with TF vars
   # TODO use Terraform path variables to render / local-exec files e.g. file("${path.module}/hello.txt")
-  provisioner "file" {
     content     = data.template_file.install-kops.rendered
-    destination = "/tmp/install-kops.sh"
-  }
+    filename = "/tmp/install-kops.sh"
   # download and deploy kops
   provisioner "local-exec" {
     #when    = destroy
@@ -182,13 +179,11 @@ resource "null_resource" "kops-install" {
   }
 }
 
-resource "null_resource" "kops-create-cluster" {
-  depends_on = [data.template_file.kops-create, null_resource.kops-install]
+resource "local_file" "kops-create-cluster" {
+  depends_on = [data.template_file.kops-create, local_file.kops-install]
   # render create script with TF vars
-  provisioner "file" {
     content     = data.template_file.kops-create.rendered
-    destination = "/tmp/create-kops-cluster.sh"
-  }
+    filename = "/tmp/create-kops-cluster.sh"
 # download and deploy kops
   provisioner "local-exec" {
     #when    = destroy
@@ -196,13 +191,17 @@ resource "null_resource" "kops-create-cluster" {
   }
 }
 
-resource "null_resource" "kops-register-cluster" {
-  depends_on = [data.template_file.kops-register, null_resource.kops-create-cluster]
+resource "time_sleep" "wait_for_kops_startup" {
+  depends_on = [local_file.kops-create-cluster]
+
+  create_duration = "3m"
+}
+
+resource "local_file" "kops-register-cluster" {
+  depends_on = [data.template_file.kops-register, local_file.kops-create-cluster]
   # render register script with TF vars
-  provisioner "file" {
     content     = data.template_file.kops-register.rendered
-    destination = "/tmp/register.sh"
-  }
+    filename = "/tmp/register.sh"
 # download and deploy kops
   provisioner "local-exec" {
     #when    = destroy
@@ -212,7 +211,7 @@ resource "null_resource" "kops-register-cluster" {
 
 # output the token int output vars  
 data "local_file" "kops_token" {
-    depends_on = [null_resource.kops-register-cluster]
+    depends_on = [local_file.kops-register-cluster]
     filename = "kops-ksa.token"
 }
   
