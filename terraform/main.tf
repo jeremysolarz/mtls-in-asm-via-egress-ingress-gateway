@@ -159,7 +159,7 @@ data "template_file" "kops-create" {
       kops-gce = var.kops-gce
     }
 }
-data "template_file" "kdata "template_file" "kops-register" {
+data "template_file" "kops-register" {
     template = file("../kops/cluster/c_register.sh")
     vars = {
       project = var.project_id
@@ -214,4 +214,3 @@ data "local_file" "kops_token" {
     depends_on = [local_file.kops-register-cluster]
     filename = "kops-ksa.token"
 }
-  
