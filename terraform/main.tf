@@ -91,7 +91,7 @@ module "client-cluster" {
   zones                   = var.zones
   release_channel         = "REGULAR"
   network                 = module.vpc.network_name
-  subnetwork              = local.client_cluster_subnet
+  subnetwork              = module.vpc.subnets_self_links ? module.vpc.subnets_self_links[0] : local.client_cluster_subnet
   ip_range_pods           = "${local.client_cluster_subnet}-pods"
   ip_range_services       = "${local.client_cluster_subnet}-services"
   network_policy          = false
@@ -138,7 +138,7 @@ resource "null_resource" "delete_gke_fw_rules" {
     when    = destroy
     command = <<EOF
 gcloud compute firewall-rules list --filter='name=example_vpc' \
-  --format='value(name)' | xargs -I {} gcloud compute firewall-rules delete {} -q"
+  --format='value(name)' | xargs -I {} gcloud compute firewall-rules delete {} -q
 EOF
   }
 }
