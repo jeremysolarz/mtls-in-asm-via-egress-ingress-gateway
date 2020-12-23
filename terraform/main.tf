@@ -146,7 +146,7 @@ EOF
 # kOps Server
 data "template_file" "install-kops" {
     template = file("../kops/cluster/a_install-kops.sh")
-    vars ={
+    vars = {
        project = var.project_id
     }
 } 
@@ -167,7 +167,10 @@ data "template_file" "kops-register" {
   } 
 
 resource "null_resource" "kops-install" {
+  depends_on = [data.template_file.install-kops]
+
   # render install file with TF vars
+  # TODO use Terraform path variables to render / local-exec files e.g. file("${path.module}/hello.txt")
   provisioner "file" {
     content     = data.template_file.install-kops.rendered
     destination = "/tmp/install-kops.sh"
@@ -180,7 +183,7 @@ resource "null_resource" "kops-install" {
 }
 
 resource "null_resource" "kops-create-cluster" {
-  depends_on = [null_resource.kops-install] 
+  depends_on = [data.template_file.kops-create, null_resource.kops-install]
   # render create script with TF vars
   provisioner "file" {
     content     = data.template_file.kops-create.rendered
@@ -194,7 +197,7 @@ resource "null_resource" "kops-create-cluster" {
 }
 
 resource "null_resource" "kops-register-cluster" {
-  depends_on = [null_resource.kops-create-cluster]
+  depends_on = [data.template_file.kops-register, null_resource.kops-create-cluster]
   # render register script with TF vars
   provisioner "file" {
     content     = data.template_file.kops-register.rendered
