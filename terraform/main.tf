@@ -138,7 +138,7 @@ resource "null_resource" "delete_gke_fw_rules" {
     when    = destroy
     command = <<EOF
 gcloud compute firewall-rules list --filter='name=example_vpc' \
-  --format='value(name)' | xargs -I {} gcloud compute firewall-rules delete {} -q"
+  --format='value(name)' | xargs -I {} gcloud compute firewall-rules delete {} -q
 EOF
   }
 }
