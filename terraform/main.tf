@@ -176,6 +176,7 @@ resource "local_file" "kops-install" {
   provisioner "local-exec" {
     #when    = destroy
     command = "/tmp/install-kops.sh"
+  # TODO - when = destroy - delete bucket
   }
 }
 
@@ -198,7 +199,7 @@ resource "time_sleep" "wait_for_kops_startup" {
 }
 
 resource "local_file" "kops-register-cluster" {
-  depends_on = [data.template_file.kops-register, local_file.kops-create-cluster]
+  depends_on = [time_sleep.wait_for_kops_startup, data.template_file.kops-register, local_file.kops-create-cluster]
   # render register script with TF vars
     content     = data.template_file.kops-register.rendered
     filename = "/tmp/register.sh"

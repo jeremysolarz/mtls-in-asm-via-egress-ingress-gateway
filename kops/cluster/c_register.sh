@@ -28,7 +28,7 @@ gcloud iam service-accounts keys create gkehub.json \
   --iam-account=client-cluster-gke-hub-sa@$PROJECT.iam.gserviceaccount.com \
   --project=$PROJECT
 echo "Storing kOps kubeconfig in mtls-kubeconfig"
-kops export kubecfg mtls.k8s.local --kubeconfig /tmp/mtls-kubeconfig
+kops export kubecfg mtls.k8s.local --kubeconfig /tmp/mtls-kubeconfig --state "gs://$PROJECT-kops-clusters/"/
 echo "Registering kOps cluster into Anthos in project: $PROJECT"
 gcloud container hub memberships register mtls-kops \
             --context=mtls.k8s.local \
