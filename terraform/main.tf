@@ -143,7 +143,7 @@ EOF
   }
 }
 
-# kOps Server
+# kOps / Server Cluster
 data "template_file" "install-kops" {
     template = file("../kops/cluster/a_install-kops.sh")
     vars = {
@@ -166,6 +166,18 @@ data "template_file" "kops-register" {
     }
   } 
 
+# When = destroy - delete bucket
+resource "null_resource" "kops-bucket-delete" {
+  depends_on = [null_resource.kops-delete-cluster]
+  triggers = {
+    bucketdest = var.project_id
+  }
+  provisioner "local-exec" {
+    when = destroy
+    command = "gsutil rm -r gs://${self.triggers.bucketdest}-kops-clusters"
+  }
+}
+
 resource "local_file" "kops-install" {
   depends_on = [data.template_file.install-kops]
   # render install file with TF vars
@@ -174,15 +186,19 @@ resource "local_file" "kops-install" {
     filename = "/tmp/install-kops.sh"
   # download and deploy kops
   provisioner "local-exec" {
-    #when    = destroy
     command = "/tmp/install-kops.sh"
-  # TODO - when = destroy - delete bucket
+  }
+}
+
+# When = destroy - delete cluster
+resource "null_resource" "kops-delete-cluster" {
+  triggers = {
+     prdestroy = var.project_id
   }
   provisioner "local-exec" {
     when = destroy
-    command = "gsutil rm -r gs://${project}-kops-clusters"
-  }
-  
+    command = "kops delete cluster mtls.k8s.local --yes --state=\"gs://${self.triggers.prdestroy}-kops-clusters\"\\"
+ }
 }
 
 resource "local_file" "kops-create-cluster" {
@@ -192,12 +208,7 @@ resource "local_file" "kops-create-cluster" {
     filename = "/tmp/create-kops-cluster.sh"
 # download and deploy kops
   provisioner "local-exec" {
-    #when    = destroy
     command = "/tmp/create-kops-cluster.sh"
-  }
-  provisioner "local-exec" {
-    when = destroy
-    command = "kops delete cluster mtls.k8s.local --yes --state=""gs://${project}-kops-clusters""/ "
   }
 }
 
@@ -214,9 +225,12 @@ resource "local_file" "kops-register-cluster" {
     filename = "/tmp/register.sh"
 # download and deploy kops
   provisioner "local-exec" {
-    #when    = destroy
     command = "/tmp/register.sh"
   }
+  provisioner "local-exec" {
+    when = destroy
+    command = "gcloud container hub memberships delete server-cluster --quiet"
+ }
 }
 
 # output the token int output vars  

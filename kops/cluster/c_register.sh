@@ -18,7 +18,7 @@ Only deleting all anthos cluster sources will stop charges. If you are done with
 # cloudresourcemanager.googleapis.com
 
 echo "Creating and downloading GKE Hub Service Account"
-gcloud iam service-accounts create gkehub-connect-sa --project=$PROJECT
+gcloud iam service-accounts create client-cluster-gke-hub-sa --project=$PROJECT
 gcloud projects add-iam-policy-binding $PROJECT \
  --member="serviceAccount:client-cluster-gke-hub-sa@$PROJECT.iam.gserviceaccount.com" \
  --role="roles/gkehub.connect"
@@ -30,11 +30,12 @@ gcloud iam service-accounts keys create gkehub.json \
 echo "Storing kOps kubeconfig in mtls-kubeconfig"
 kops export kubecfg mtls.k8s.local --kubeconfig /tmp/mtls-kubeconfig --state "gs://$PROJECT-kops-clusters/"/
 echo "Registering kOps cluster into Anthos in project: $PROJECT"
-gcloud container hub memberships register mtls-kops \
+gcloud container hub memberships register server-cluster \
             --context=mtls.k8s.local \
             --service-account-key-file=gkehub.json \
             --kubeconfig=/tmp/mtls-kubeconfig \
-            --project=$PROJECT
+            --project=$PROJECT \
+            --quiet
 echo "Creating login token for CloudConsole (admin account!)"
 kubectl --kubeconfig /tmp/mtls-kubeconfig create serviceaccount -n kube-system admin-user
 kubectl --kubeconfig /tmp/mtls-kubeconfig create clusterrolebinding admin-user-binding \
