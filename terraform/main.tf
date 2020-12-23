@@ -91,7 +91,7 @@ module "client-cluster" {
   zones                   = var.zones
   release_channel         = "REGULAR"
   network                 = module.vpc.network_name
-  subnetwork              = local.client_cluster_subnet
+  subnetwork              = module.vpc.subnets_self_links[0]
   ip_range_pods           = "${local.client_cluster_subnet}-pods"
   ip_range_services       = "${local.client_cluster_subnet}-services"
   network_policy          = false
