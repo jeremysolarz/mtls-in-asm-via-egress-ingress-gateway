@@ -178,6 +178,11 @@ resource "local_file" "kops-install" {
     command = "/tmp/install-kops.sh"
   # TODO - when = destroy - delete bucket
   }
+  provisioner "local-exec" {
+    when = destroy
+    command = "gsutil rm -r gs://${project}-kops-clusters"
+  }
+  
 }
 
 resource "local_file" "kops-create-cluster" {
@@ -189,6 +194,10 @@ resource "local_file" "kops-create-cluster" {
   provisioner "local-exec" {
     #when    = destroy
     command = "/tmp/create-kops-cluster.sh"
+  }
+  provisioner "local-exec" {
+    when = destroy
+    command = "kops delete cluster mtls.k8s.local --yes --state=""gs://${project}-kops-clusters""/ "
   }
 }
 
