@@ -20,6 +20,7 @@ output "client_kubernetes_endpoint" {
 }
 
 output "client_ca_certificate" {
+  sensitive = true
   value = module.client-cluster.ca_certificate
 }
 
@@ -32,9 +33,3 @@ output "client_token" {
   sensitive = true
   value     = base64encode(data.google_client_config.default.access_token)
 }
-
-output "kops_token" {
-  description = "The server cluster token for Cloud Console"
-  sensitive = true
-  value     = base64encode(data.local_file.kops_token.content)
-} 
