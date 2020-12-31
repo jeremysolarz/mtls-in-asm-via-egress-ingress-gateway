@@ -233,7 +233,7 @@ resource "local_file" "kops-register-cluster" {
  }
 }
 
-# output the token int output vars  
+# output the token into output vars
 data "local_file" "kops_token" {
     depends_on = [local_file.kops-register-cluster]
     filename = "kops-ksa.token"
