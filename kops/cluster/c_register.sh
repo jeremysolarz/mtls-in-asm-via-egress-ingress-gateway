@@ -9,13 +9,7 @@ Running this will create Anthos PAYG costs as describe here:\n
 https://cloud.google.com/anthos/pricing
 \n
 \n
-Only deleting all anthos cluster sources will stop charges. If you are done with your tests, please run the cleanup procedure"
-#gcloud services enable \
-# --project=$PROJECT \
-# container.googleapis.com \
-# gkeconnect.googleapis.com \
-# gkehub.googleapis.com \
-# cloudresourcemanager.googleapis.com
+Only deleting all Anthos cluster sources will stop charges. If you are done with your tests, please run the cleanup procedure"
 
 echo "Creating and downloading GKE Hub Service Account"
 gcloud iam service-accounts create client-cluster-gke-hub-sa --project=$PROJECT
