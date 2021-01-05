@@ -193,6 +193,7 @@ resource "local_file" "kops-install" {
 
 # When = destroy - delete cluster
 resource "null_resource" "kops-delete-cluster" {
+  depends_on [local_file.kops-register-cluster]
   triggers = {
      prdestroy = var.project_id
   }

@@ -28,7 +28,7 @@ echo "Registering kOps cluster into Anthos in project: $PROJECT"
 gcloud container hub memberships register server-cluster \
             --context=mtls.k8s.local \
             --service-account-key-file=gkehub.json \
-            --kubeconfig=/tmp/mtls-kubeconfig \
+            --kubeconfig=$LOCATION/mtls-kubeconfig \
             --project=$PROJECT \
             --quiet
 echo "Creating login token for CloudConsole (admin account!)"

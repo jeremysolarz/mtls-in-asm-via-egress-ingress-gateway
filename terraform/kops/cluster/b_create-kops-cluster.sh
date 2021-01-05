@@ -5,7 +5,6 @@ export PROJECT='${project}'
 export GCPZONE='${zone}'
 export KOPS_FEATURE_FLAGS='${kops-gce}'
 ###
-
 # Make those eventually configurable - but for now they are fixed
 
 #source ../env-vars
