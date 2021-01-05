@@ -145,14 +145,14 @@ EOF
 
 # kOps / Server Cluster
 data "template_file" "install-kops" {
-    template = file("kops/cluster/a_install-kops.sh")
+    template = file("KOPS/cluster/a_install-kops.sh")
     vars = {
        project = var.project_id
     }
 } 
 
 data "template_file" "kops-create" {
-    template = file("kops/cluster/b_create-kops-cluster.sh")
+    template = file("KOPS/cluster/b_create-kops-cluster.sh")
     vars = {
       project = var.project_id
       zone = var.zones[0]
@@ -160,7 +160,7 @@ data "template_file" "kops-create" {
     }
 }
 data "template_file" "kops-register" {
-    template = file("kops/cluster/c_register.sh")
+    template = file("KOPS/cluster/c_register.sh")
     vars = {
       project = var.project_id
       location = path.root 
