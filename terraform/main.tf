@@ -128,6 +128,7 @@ EOF
     environment = {
       PROJECT_ID = var.project_id
       ZONE = var.zones[0]
+      TYPE = "client"
     }
   }
 }
@@ -264,6 +265,7 @@ EOF
     environment = {
       PROJECT_ID = var.project_id
       ZONE = var.zones[0]
+      TYPE = "server"
     }
   }
 }
