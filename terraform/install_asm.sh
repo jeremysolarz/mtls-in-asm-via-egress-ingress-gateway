@@ -1,11 +1,4 @@
 #!/bin/bash
-#source env-vars
-## TF vars
-TERRAFORM_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-##
-
-ASM_VERSION="1.6.11-asm.1"
-ASM_REVISION="1611-1"
 
 uname_out="$(uname -s)"
 case "${uname_out}" in

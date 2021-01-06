@@ -258,7 +258,7 @@ resource "null_resource" "server-cluster-asm" {
 
   provisioner "local-exec" {
     command = <<EOF
-export KUBECONFIG="${PATH}/server-kubeconfig"
+export KUBECONFIG="${TERRAFORM_ROOT}/server-kubeconfig"
 ./install_asm.sh
 unset KUBECONFIG
 EOF
@@ -266,7 +266,9 @@ EOF
       PROJECT_ID = var.project_id
       ZONE = var.zones[0]
       TYPE = "server"
-      PATH = path.root
+      TERRAFORM_ROOT = path.root
+      ASM_VERSION    = "1.6.11-asm.1"
+      ASM_REVISION   = "1611-1"
     }
   }
 }
