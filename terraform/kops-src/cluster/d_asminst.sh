@@ -2,39 +2,36 @@
 #source env-vars
 ## TF vars
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-LOCATION="$DIR/../../"
+LOCATION="$DIR/../.."
 ##
+
+ASM_VERSION="1.6.11-asm.1"
+ASM_REVISION="1611-1"
+
+uname_out="$(uname -s)"
+case "${uname_out}" in
+    Linux*)     OS=linux-amd64;;
+    Darwin*)    OS=osx;;
+    *)          echo "Oh snap! It seems ASM is not yet available for your OS: $uname_out"; exit1;
+esac
+
+ASM_SUFFIX=${ASM_VERSION}-${OS}
 
 uname_out="$(uname -s)"
 echo -e "Installing ASM for OS $uname_out into $LOCATION"
 
 echo "Downloading ASM installation files"
-case $uname_out in
-Darwin*) 
-    echo "Downloading ASM for MacOs now"
-    gsutil cp gs://gke-release/asm/istio-1.6.11-asm.1-osx.tar.gz $LOCATION/
-    echo "Done downloading"
-    echo "Unpacking download and preparing install"
-    tar xzf $LOCATION/istio-1.6.11-asm.1-osx.tar.gz
-    ;;
-Linux*)
-    echo "Downloading ASM for Linux now"
-    gsutil cp gs://gke-release/asm/istio-1.6.11-asm.1-linux-amd64.tar.gz
-    echo "Done downloading"
-    echo "Unpacking download and preparing install"
-    tar xzf $LOCATION/istio-1.6.11-asm.1-osx.tar.gz
-    ;;
-*) 
-    echo "Oh snap! It seems kOps is not yet available for your OS: $uname_out"
-    exit 1
-    ;;
-esac
+gsutil cp gs://gke-release/asm/istio-${ASM_SUFFIX}.tar.gz $LOCATION/
+echo "Done downloading"
+echo "Unpacking download and preparing install"
+tar xzf $LOCATION/istio-${ASM_SUFFIX}.tar.gz
+
 # Installing ASM
 echo "Preparing istio installation"
-cd istio-1.6.11-asm.1
+cd istio-${ASM_VERSION}
 kubectl --kubeconfig $LOCATION/server-kubeconfig create namespace istio-system
 # Create webhook version
-echo "Creating webhook for version asm-1611-1"
+echo "Creating webhook for version asm-${ASM_REVISION}"
 cat <<EOF > $LOCATION/istiod-service.yaml
 apiVersion: v1
 kind: Service
@@ -42,7 +39,7 @@ metadata:
   name: istiod
   namespace: istio-system
   labels:
-    istio.io/rev: asm-1611-1
+    istio.io/rev: asm-${ASM_REVISION}
     app: istiod
     istio: pilot
     release: istio
@@ -63,12 +60,12 @@ spec:
       protocol: TCP
   selector:
     app: istiod
-    istio.io/rev: asm-1611-1
+    istio.io/rev: asm-${ASM_REVISION}
 EOF
 # Run istioctl isntallation
 echo "Installing istio into the cluster"
-bin/istioctl install --set profile=asm-multicloud --set revision=asm-1611-1 -f $LOCATION/server/features.yaml
+bin/istioctl install --set profile=asm-multicloud --set revision=asm-${ASM_REVISION} -f $LOCATION/server/features.yaml
 kubectl --kubeconfig $LOCATION/server-kubeconfig apply -f $LOCATION/istiod-service.yaml
 # Inject sidecare proxies
-kubectl --kubeconfig $LOCATION/server-kubeconfig label namespace default istio-injection- istio.io/rev=asm-1611-1 --overwrite
-ecbo "Done installing istio into the cluster"
+kubectl --kubeconfig $LOCATION/server-kubeconfig label namespace default istio-injection- istio.io/rev=asm-${ASM_REVISION} --overwrite
+echo "Done installing istio into the cluster"
