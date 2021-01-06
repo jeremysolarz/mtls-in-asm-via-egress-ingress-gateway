@@ -1,12 +1,12 @@
 #!/bin/bash
 #source env-vars
 ## TF vars
-export PROJECT='vch-gke'
-export LOCATION='/Users/vhamburger/Documents/Demo/mtls-test/mtls-in-asm-via-egress-ingress-gateway/terraform'
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+LOCATION="$DIR/../../"
 ##
 
 uname_out="$(uname -s)"
-echo -e "Installing ASM for OS $uname_out"
+echo -e "Installing ASM for OS $uname_out into $LOCATION"
 
 echo "Downloading ASM installation files"
 case $uname_out in
