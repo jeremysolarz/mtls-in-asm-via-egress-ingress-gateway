@@ -174,6 +174,12 @@ cd ../..
 The `create-client.sh` command automatically runs some checks that the setup works. E.g. 
 `curl -v http://${SERVICE_URL}/status/418` from the "sleeper" pod.
 
+If you want to test for yourself you can connect to the sleeper pod (make sure your cluster context is set to the client cluster).
+
+```
+kubectl exec deploy/sleep -it -- /bin/bash
+```
+
 Once you have connected to the sleeper pod you can also run a check via it's alias name
 
 ```
@@ -193,6 +199,12 @@ Show the proxy logs of the sleeper pod:
 Show the logs of the egress proxy:
 
 `client/get-logs-from-egress.sh`
+
+#### Server
+
+Show the logs of the ingress proxy:
+
+`server/get-logs-from-ingress.sh`
 
 #### TCP encryption with MySQL
 

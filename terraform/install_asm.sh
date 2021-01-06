@@ -1,8 +1,7 @@
 #!/bin/bash
 #source env-vars
 ## TF vars
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-TERRAFORM_ROOT="$DIR/../.."
+TERRAFORM_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ##
 
 ASM_VERSION="1.6.11-asm.1"
@@ -29,7 +28,7 @@ tar xzf $TERRAFORM_ROOT/istio-${ASM_SUFFIX}.tar.gz
 # Installing ASM
 echo "Preparing istio installation"
 cd istio-${ASM_VERSION}
-kubectl --kubeconfig $TERRAFORM_ROOT/server-kubeconfig create namespace istio-system
+kubectl create namespace istio-system
 # Create webhook version
 echo "Creating webhook for version asm-${ASM_REVISION}"
 cat <<EOF > $TERRAFORM_ROOT/istiod-service.yaml
@@ -65,7 +64,7 @@ EOF
 # Run istioctl isntallation
 echo "Installing istio into the cluster"
 bin/istioctl install --set profile=asm-multicloud --set revision=asm-${ASM_REVISION} -f "$TERRAFORM_ROOT/../server/features.yaml"
-kubectl --kubeconfig $TERRAFORM_ROOT/server-kubeconfig apply -f $TERRAFORM_ROOT/istiod-service.yaml
+kubectl apply -f $TERRAFORM_ROOT/istiod-service.yaml
 # Inject sidecare proxies
-kubectl --kubeconfig $TERRAFORM_ROOT/server-kubeconfig label namespace default istio-injection- istio.io/rev=asm-${ASM_REVISION} --overwrite
+kubectl label namespace default istio-injection- istio.io/rev=asm-${ASM_REVISION} --overwrite
 echo "Done installing istio into the cluster"
