@@ -215,7 +215,7 @@ resource "null_resource" "kops-delete-cluster" {
   }
   provisioner "local-exec" {
     when = destroy
-    command = "kops delete cluster server-cluster.local --yes --state=\"gs://${self.triggers.prdestroy}-kops-clusters\"\\"
+    command = "kops delete cluster server-cluster.k8s.local --yes --state=\"gs://${self.triggers.prdestroy}-kops-clusters\"\\"
  }
 }
 
