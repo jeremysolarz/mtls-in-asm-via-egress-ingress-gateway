@@ -30,7 +30,7 @@ kubectl apply -f virtual-service.yaml
 kubectl apply -f gateway-mutual.yaml
 
 
-sleep 15
+sleep 30
 # jsolarz-sanbox
 curl -v -HHost:${SERVICE_URL} --resolve \
   "${SERVICE_URL}:$SECURE_INGRESS_PORT:$INGRESS_HOST" \
