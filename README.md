@@ -40,9 +40,13 @@ gateway.
        gkehub.googleapis.com
     ```
 
-### Optional (Terraform scripts provided for 2 GCP clusters with ASM)
- 
- - Two Anthos clusters (tested with GKE, Anthos on AWS, Anthos attached cluster EKS K8s 1.16)
+### Alternatives
+
+The deployment of mutial TLS via Ingress <> Egress Gateways was tested with GKE, Anthos on AWS and 
+Anthos attached cluster EKS K8s 1.16 if you want to have another setup you will need the following.
+
+Setup requirements: 
+ - Two Anthos clusters with external internet access 
  - ASM installed on both clusters (tested with version ASM 1.6 - Istio 1.6.8)
    - [Egress via egress gateways](https://cloud.google.com/service-mesh/docs/enable-optional-features#egress_gateways) via optional features enabled
    - [Direct Envoy to stdout](https://cloud.google.com/service-mesh/docs/enable-optional-features#direct_envoy_to_stdout) via optional features enabled 
@@ -102,9 +106,9 @@ and are expected to be in a fixed location. If you have already your own certifi
 locations.
 
 ```
-./2_intermediate/certs/ca-chain.cert.pem
-./4_client/private/<YOUR_SERVICE_URL>.key.pem
-./4_client/certs/<YOUR_SERVICE_URL>.cert.pem 
+./certs/2_intermediate/certs/ca-chain.cert.pem
+./certs/4_client/private/<YOUR_SERVICE_URL>.key.pem
+./certs/4_client/certs/<YOUR_SERVICE_URL>.cert.pem 
 ``` 
 
 ### Create client / server (HTTP & MySQL)
@@ -114,7 +118,7 @@ locations.
 The following sections deploy a httpbin server on the server cluster and a sleeper pod (curl capable) on the client 
 cluster. Encrypted communication will happen transparently for client / server via Egress / Ingress Gateways.
 
-##### Create the server side.
+##### Create the server side
 
 ```
 cd server/httpbin-server
@@ -156,7 +160,7 @@ Go back to the root directory.
 cd ../..
 ```               
 
-##### Create the client side.
+##### Create the client side
 
 The client creates a sleeper pod (`image: tutum/curl) that calls the httpbin server side.
 
