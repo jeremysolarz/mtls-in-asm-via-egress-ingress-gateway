@@ -142,9 +142,9 @@ a output like this.
 
 Now as a final check see if the sidecar proxy was injected properly into the server.
 
-Run
+Run with the context of the generated kops cluster
 ```
-kubectl get pods -n default
+kubectl --kubeconfig "../../terraform/server-kubeconfig" get pods -n default
 ```
 
 You should see output similar to this:
@@ -188,6 +188,12 @@ Once you have connected to the sleeper pod you can also run a check via it's ali
 
 ```
 curl -v http://httpbin-external/status/418
+```
+
+Exit from the sleeper pod
+
+```
+exit
 ```
 
 ### Bonus / Troubleshooting
