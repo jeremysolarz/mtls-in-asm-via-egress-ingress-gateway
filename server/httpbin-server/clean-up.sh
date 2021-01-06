@@ -1,6 +1,6 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-$DIR/../set-project-and-cluster-server.sh
+. $DIR/../set-project-and-cluster-server.sh
 
 kubectl delete --ignore-not-found=true gateway gateway-mutual
 kubectl delete --ignore-not-found=true virtualservice virtual-service

@@ -1,6 +1,6 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-$DIR/../set-project-and-cluster-server.sh
+. $DIR/../set-project-and-cluster-server.sh
 
 $DIR/./clean-up.sh
 
