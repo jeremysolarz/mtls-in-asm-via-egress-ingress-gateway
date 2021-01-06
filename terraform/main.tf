@@ -253,7 +253,7 @@ resource "local_file" "kops-register-cluster" {
 
 resource "null_resource" "server-cluster-asm" {
 
-  depends_on = [time_sleep.wait_for_kops_startup, local_file.kops-create-cluster]
+  depends_on = [local_file.kops-register-cluster]
 
   provisioner "local-exec" {
     command = <<EOF
