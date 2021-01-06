@@ -122,6 +122,7 @@ resource "null_resource" "client-cluster-asm" {
 
   provisioner "local-exec" {
     command = <<EOF
+unset KUBECONFIG
 ../client/set-project-and-cluster-client.sh
 ./install_asm.sh
 EOF
