@@ -2,7 +2,7 @@
 #source env-vars
 ## TF vars
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-LOCATION="$DIR/../.."
+TERRAFORM_ROOT="$DIR/../.."
 ##
 
 ASM_VERSION="1.6.11-asm.1"
@@ -18,21 +18,21 @@ esac
 ASM_SUFFIX=${ASM_VERSION}-${OS}
 
 uname_out="$(uname -s)"
-echo -e "Installing ASM for OS $uname_out into $LOCATION"
+echo -e "Installing ASM for OS $uname_out into $TERRAFORM_ROOT"
 
 echo "Downloading ASM installation files"
-gsutil cp gs://gke-release/asm/istio-${ASM_SUFFIX}.tar.gz $LOCATION/
+gsutil cp gs://gke-release/asm/istio-${ASM_SUFFIX}.tar.gz $TERRAFORM_ROOT/
 echo "Done downloading"
 echo "Unpacking download and preparing install"
-tar xzf $LOCATION/istio-${ASM_SUFFIX}.tar.gz
+tar xzf $TERRAFORM_ROOT/istio-${ASM_SUFFIX}.tar.gz
 
 # Installing ASM
 echo "Preparing istio installation"
 cd istio-${ASM_VERSION}
-kubectl --kubeconfig $LOCATION/server-kubeconfig create namespace istio-system
+kubectl --kubeconfig $TERRAFORM_ROOT/server-kubeconfig create namespace istio-system
 # Create webhook version
 echo "Creating webhook for version asm-${ASM_REVISION}"
-cat <<EOF > $LOCATION/istiod-service.yaml
+cat <<EOF > $TERRAFORM_ROOT/istiod-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -64,8 +64,8 @@ spec:
 EOF
 # Run istioctl isntallation
 echo "Installing istio into the cluster"
-bin/istioctl install --set profile=asm-multicloud --set revision=asm-${ASM_REVISION} -f $LOCATION/server/features.yaml
-kubectl --kubeconfig $LOCATION/server-kubeconfig apply -f $LOCATION/istiod-service.yaml
+bin/istioctl install --set profile=asm-multicloud --set revision=asm-${ASM_REVISION} -f "$TERRAFORM_ROOT/../server/features.yaml"
+kubectl --kubeconfig $TERRAFORM_ROOT/server-kubeconfig apply -f $TERRAFORM_ROOT/istiod-service.yaml
 # Inject sidecare proxies
-kubectl --kubeconfig $LOCATION/server-kubeconfig label namespace default istio-injection- istio.io/rev=asm-${ASM_REVISION} --overwrite
+kubectl --kubeconfig $TERRAFORM_ROOT/server-kubeconfig label namespace default istio-injection- istio.io/rev=asm-${ASM_REVISION} --overwrite
 echo "Done installing istio into the cluster"
