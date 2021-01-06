@@ -258,7 +258,7 @@ resource "null_resource" "server-cluster-asm" {
 
   provisioner "local-exec" {
     command = <<EOF
-export KUBECONFIG="${TERRAFORM_ROOT}/server-kubeconfig"
+export KUBECONFIG="$TERRAFORM_ROOT/server-kubeconfig"
 ./install_asm.sh
 unset KUBECONFIG
 EOF
