@@ -1,7 +1,5 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-. $DIR/../env-vars
-
 $DIR/./set-project-and-cluster-server.sh
 
 kubectl logs -n istio-system "$(kubectl get pod -l istio=ingressgateway \
