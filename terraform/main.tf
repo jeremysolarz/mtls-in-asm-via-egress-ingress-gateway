@@ -129,6 +129,9 @@ EOF
       PROJECT_ID = var.project_id
       ZONE = var.zones[0]
       TYPE = "client"
+      TERRAFORM_ROOT = abspath(path.root)
+      ASM_VERSION    = "1.6.11-asm.1"
+      ASM_REVISION   = "1611-1"
     }
   }
 }
@@ -266,7 +269,7 @@ EOF
       PROJECT_ID = var.project_id
       ZONE = var.zones[0]
       TYPE = "server"
-      TERRAFORM_ROOT = path.root
+      TERRAFORM_ROOT = abspath(path.root)
       ASM_VERSION    = "1.6.11-asm.1"
       ASM_REVISION   = "1611-1"
     }
