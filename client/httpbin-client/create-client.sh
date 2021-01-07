@@ -1,12 +1,12 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-. $DIR/../../env-vars
-
-$DIR/../../server/set-project-and-cluster-server.sh
+. $DIR/../../server/set-project-and-cluster-server.sh
 
 # !!! WARNING - DO NOT MOVE !!!
 # get Ingress IP from server side
 export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+unset KUBECONFIG
 
 $DIR/../set-project-and-cluster-client.sh
 
@@ -26,8 +26,6 @@ sed "s/SERVICE_URL/$SERVICE_URL/" virtualservice-destinationrule-from-egressgate
 
 # we just have a sleep.yaml.tmpl file to ignore *.yaml
 sed "s/SERVICE_URL/$SERVICE_URL/" sleep.yaml.tmpl > sleep.yaml
-
-kubectl label namespace default istio-injection=enabled
 
 kubectl apply -f httpbin-external.yaml
 

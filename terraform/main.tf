@@ -108,12 +108,33 @@ module "client-cluster" {
   ]
 }
 
-module "client-cluster-asm" {
+/*module "client-cluster-asm" {
   source           = "github.com/jeremysolarz/terraform-google-kubernetes-engine.git//modules/asm"
   cluster_name     = module.client-cluster.name
   cluster_endpoint = module.client-cluster.endpoint
   project_id       = var.project_id
   location         = module.client-cluster.location
+}*/
+
+resource "null_resource" "client-cluster-asm" {
+
+  depends_on = [module.client-cluster]
+
+  provisioner "local-exec" {
+    command = <<EOF
+unset KUBECONFIG
+../client/set-project-and-cluster-client.sh
+./install_asm.sh
+EOF
+    environment = {
+      PROJECT_ID = var.project_id
+      ZONE = var.zones[0]
+      TYPE = "client"
+      TERRAFORM_ROOT = abspath(path.root)
+      ASM_VERSION    = "1.6.11-asm.1"
+      ASM_REVISION   = "1611-1"
+    }
+  }
 }
 
 data "google_client_config" "default" {
@@ -145,14 +166,14 @@ EOF
 
 # kOps / Server Cluster
 data "template_file" "install-kops" {
-    template = file("KOPS/cluster/a_install-kops.sh")
+    template = file("kops-src/cluster/a_install-kops.sh")
     vars = {
        project = var.project_id
     }
 } 
 
 data "template_file" "kops-create" {
-    template = file("KOPS/cluster/b_create-kops-cluster.sh")
+    template = file("kops-src/cluster/b_create-kops-cluster.sh")
     vars = {
       project = var.project_id
       zone = var.zones[0]
@@ -160,7 +181,7 @@ data "template_file" "kops-create" {
     }
 }
 data "template_file" "kops-register" {
-    template = file("KOPS/cluster/c_register.sh")
+    template = file("kops-src/cluster/c_register.sh")
     vars = {
       project = var.project_id
       location = path.root 
@@ -183,8 +204,8 @@ resource "local_file" "kops-install" {
   depends_on = [data.template_file.install-kops]
   # render install file with TF vars
   # TODO use Terraform path variables to render / local-exec files e.g. file("${path.module}/hello.txt")
-    content     = data.template_file.install-kops.rendered
-    filename = "/tmp/install-kops.sh"
+  content     = data.template_file.install-kops.rendered
+  filename = "/tmp/install-kops.sh"
   # download and deploy kops
   provisioner "local-exec" {
     command = "/tmp/install-kops.sh"
@@ -199,15 +220,15 @@ resource "null_resource" "kops-delete-cluster" {
   }
   provisioner "local-exec" {
     when = destroy
-    command = "kops delete cluster mtls.k8s.local --yes --state=\"gs://${self.triggers.prdestroy}-kops-clusters\"\\"
+    command = "kops delete cluster server-cluster.k8s.local --yes --state=\"gs://${self.triggers.prdestroy}-kops-clusters\"\\"
  }
 }
 
 resource "local_file" "kops-create-cluster" {
   depends_on = [data.template_file.kops-create, local_file.kops-install]
   # render create script with TF vars
-    content     = data.template_file.kops-create.rendered
-    filename = "/tmp/create-kops-cluster.sh"
+  content     = data.template_file.kops-create.rendered
+  filename = "/tmp/create-kops-cluster.sh"
 # download and deploy kops
   provisioner "local-exec" {
     command = "/tmp/create-kops-cluster.sh"
@@ -223,9 +244,9 @@ resource "time_sleep" "wait_for_kops_startup" {
 resource "local_file" "kops-register-cluster" {
   depends_on = [time_sleep.wait_for_kops_startup, data.template_file.kops-register, local_file.kops-create-cluster]
   # render register script with TF vars
-    content     = data.template_file.kops-register.rendered
-    filename = "/tmp/register.sh"
-# download and deploy kops
+  content     = data.template_file.kops-register.rendered
+  filename = "/tmp/register.sh"
+  # download and deploy kops
   provisioner "local-exec" {
     command = "/tmp/register.sh"
   }
@@ -235,8 +256,29 @@ resource "local_file" "kops-register-cluster" {
  }
 }
 
+resource "null_resource" "server-cluster-asm" {
+
+  depends_on = [local_file.kops-register-cluster]
+
+  provisioner "local-exec" {
+    command = <<EOF
+export KUBECONFIG="$TERRAFORM_ROOT/server-kubeconfig"
+./install_asm.sh
+unset KUBECONFIG
+EOF
+    environment = {
+      PROJECT_ID = var.project_id
+      ZONE = var.zones[0]
+      TYPE = "server"
+      TERRAFORM_ROOT = abspath(path.root)
+      ASM_VERSION    = "1.6.11-asm.1"
+      ASM_REVISION   = "1611-1"
+    }
+  }
+}
+
 # output the token into output vars
 data "local_file" "kops_token" {
-    depends_on = [local_file.kops-register-cluster]
-    filename = "kops-ksa.token"
+  depends_on = [local_file.kops-register-cluster]
+  filename = "kops-ksa.token"
 }

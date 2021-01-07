@@ -5,16 +5,48 @@
 The following repository should help in setting up mTLS between two clusters via encryption at Egress / Ingress 
 gateway.
 
-## Prerequisites
+## Before you begin
 
  - If you use your local machine
    - Install and initialize the [Cloud SDK](https://cloud.google.com/sdk/docs/quickstarts) (the gcloud command-line tool).
    - Install `git` command line tool.
    - Install `terraform` command line tool.
 
-### Optional (Terraform scripts provided for 2 GCP clusters with ASM)
+ - Setup you environment to have PROJECT_ID, REGION and ZONE
+   ```
+   export PROJECT_ID=YOUR_PROJECT_ID
+   export REGION=GCP_REGION
+   export ZONE=GCP_ZONE
  
- - Two Anthos clusters (tested with GKE, Anthos on AWS, Anthos attached cluster EKS K8s 1.16)
+   gcloud config set project ${PROJECT_ID}
+   gcloud config set compute/region ${REGION}
+   gcloud config set compute/zone ${ZONE}
+   ```
+ - Enable the APIs needed for the tutorial:
+   ```
+   gcloud services enable \
+       compute.googleapis.com \
+       container.googleapis.com \
+       cloudresourcemanager.googleapis.com \
+       stackdriver.googleapis.com \
+       monitoring.googleapis.com \
+       logging.googleapis.com \
+       cloudtrace.googleapis.com \
+       meshca.googleapis.com \
+       meshtelemetry.googleapis.com \
+       meshconfig.googleapis.com \
+       iamcredentials.googleapis.com \
+       gkeconnect.googleapis.com \
+       gkehub.googleapis.com
+    ```
+
+### Alternatives
+
+The deployment of mutial TLS via Ingress <> Egress Gateways was tested with GKE, Anthos on AWS and 
+Anthos attached cluster EKS K8s 1.16 if you want to have another setup you will need the following.
+
+Setup requirements: 
+ - Two Anthos clusters with external internet access 
  - ASM installed on both clusters (tested with version ASM 1.6 - Istio 1.6.8)
    - [Egress via egress gateways](https://cloud.google.com/service-mesh/docs/enable-optional-features#egress_gateways) via optional features enabled
    - [Direct Envoy to stdout](https://cloud.google.com/service-mesh/docs/enable-optional-features#direct_envoy_to_stdout) via optional features enabled 
@@ -27,74 +59,36 @@ Depending on if you already have two Anthos GKE clusters with ASM installed or n
 
 ### Client / Server cluster setup via Terraform
 
-Run the Terraform scripts to setup client / server cluster.
+1. Change into the terraform folder
+   ```
+   cd terraform
+   ```
 
-```
-cd terraform
-terraform init
-terraform plan
+1. Create a terraform.tfvars file (based on the environment variables you created before)
+   ```
+   cat << EOF > terraform.tfvars
+   project_id = "${PROJECT_ID}"
+   region = "${REGION}"
+   zones = ["${ZONE}"]
+   EOF
+   ```
 
-terraform apply --auto-approve
-
-cd ..
-```
-
-### Environment setup
- 
-Copy the file env-vars.tmpl to another file (e.g. env-vars) and will it with the right values for egress and ingress clusters 
-(the two Anthos clusters you created before, that have ASM installed).
-Note: If you used Terraform to create the client / server clusters use client-cluster for EGRESS_CLUSTER and 
-server-clusters for INGRESS_CLUSTER.
-
-Source the newly created file with the appropriate environment variables e.g.
-`source env-vars`
-
-Afterwards you should have values for the following variables
-
-```
-echo "==== EGRESS ===="
-echo $EGRESS_PROJECT
-echo $EGRESS_CLUSTER
-echo $EGRESS_LOCATION
-
-echo "==== INGRESS ===="
-echo $INGRESS_PROJECT
-echo $INGRESS_CLUSTER
-echo $INGRESS_LOCATION
-```
-
-If you used Terraform it should look something like
-
-```
-==== EGRESS ====
-your-project-id
-client-cluster
-us-central1-c
-==== INGRESS ====
-your-project-id
-server-cluster
-us-central1-c
-```
-
-Keep in mind that the egress cluster is the client and the ingress cluster is the server side.
-
-*Note:*
-Client / Server certificates will be created with [mtls-go-example](https://github.com/nicholasjackson/mtls-go-example)
-and are expected to be in a fixed location. If you have already your own certificates you need to copy them in the right 
-locations.
-
-```
-./2_intermediate/certs/ca-chain.cert.pem
-./4_client/private/<YOUR_SERVICE_URL>.key.pem
-./4_client/certs/<YOUR_SERVICE_URL>.cert.pem 
-``` 
-
-As the DNS name for the Ingress Gateway we use [nip.io](nip.io). Which gives us the possibility to resolve the
-Ingress IP as DNS name e.g. 192.168.0.1.nip.io resolves to 192.168.0.1  
+1. Run the Terraform scripts to setup client / server cluster.
+   ```
+   terraform init
+   terraform plan
+   
+   terraform apply --auto-approve
+   
+   cd ..
+   ```
 
 ### ASM Configuration
 
 In the following sections we fill showcase mTLS encryption for both HTTP and TCP endpoints.
+
+As the DNS name for the Ingress Gateway we use [nip.io](nip.io). Which gives us the possibility to resolve the
+Ingress IP as DNS name e.g. 192.168.0.1.nip.io resolves to 192.168.0.1  
 
 First you need to create the certificates for client / server endpoints. The following command will
 
@@ -106,6 +100,17 @@ First you need to create the certificates for client / server endpoints. The fol
 ./create-keys.sh
 ```
 
+*Note:*
+Client / Server certificates will be created with [mtls-go-example](https://github.com/nicholasjackson/mtls-go-example)
+and are expected to be in a fixed location. If you have already your own certificates you need to copy them in the right 
+locations.
+
+```
+./certs/2_intermediate/certs/ca-chain.cert.pem
+./certs/4_client/private/<YOUR_SERVICE_URL>.key.pem
+./certs/4_client/certs/<YOUR_SERVICE_URL>.cert.pem 
+``` 
+
 ### Create client / server (HTTP & MySQL)
 
 #### HTTP encryption with HttpBin   
@@ -113,7 +118,7 @@ First you need to create the certificates for client / server endpoints. The fol
 The following sections deploy a httpbin server on the server cluster and a sleeper pod (curl capable) on the client 
 cluster. Encrypted communication will happen transparently for client / server via Egress / Ingress Gateways.
 
-##### Create the server side.
+##### Create the server side
 
 ```
 cd server/httpbin-server
@@ -137,9 +142,9 @@ a output like this.
 
 Now as a final check see if the sidecar proxy was injected properly into the server.
 
-Run
+Run with the context of the generated kops cluster
 ```
-kubectl get pods -n default
+kubectl --kubeconfig "../../terraform/server-kubeconfig" get pods -n default
 ```
 
 You should see output similar to this:
@@ -155,7 +160,7 @@ Go back to the root directory.
 cd ../..
 ```               
 
-##### Create the client side.
+##### Create the client side
 
 The client creates a sleeper pod (`image: tutum/curl) that calls the httpbin server side.
 
@@ -173,10 +178,22 @@ cd ../..
 The `create-client.sh` command automatically runs some checks that the setup works. E.g. 
 `curl -v http://${SERVICE_URL}/status/418` from the "sleeper" pod.
 
+If you want to test for yourself you can connect to the sleeper pod (make sure your cluster context is set to the client cluster).
+
+```
+kubectl exec deploy/sleep -it -- /bin/bash
+```
+
 Once you have connected to the sleeper pod you can also run a check via it's alias name
 
 ```
 curl -v http://httpbin-external/status/418
+```
+
+Exit from the sleeper pod
+
+```
+exit
 ```
 
 ### Bonus / Troubleshooting
@@ -192,6 +209,12 @@ Show the proxy logs of the sleeper pod:
 Show the logs of the egress proxy:
 
 `client/get-logs-from-egress.sh`
+
+#### Server
+
+Show the logs of the ingress proxy:
+
+`server/get-logs-from-ingress.sh`
 
 #### TCP encryption with MySQL
 

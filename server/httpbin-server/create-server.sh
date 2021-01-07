@@ -1,8 +1,6 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-. $DIR/../../env-vars
-
-$DIR/../set-project-and-cluster-server.sh
+. $DIR/../set-project-and-cluster-server.sh
 
 $DIR/./clean-up.sh
 
@@ -14,8 +12,6 @@ export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressga
 
 # url of the external service
 SERVICE_URL="$INGRESS_HOST.nip.io"
-
-kubectl label namespace default istio-injection=enabled
 
 kubectl apply -f httpbin.yaml
 
@@ -34,7 +30,7 @@ kubectl apply -f virtual-service.yaml
 kubectl apply -f gateway-mutual.yaml
 
 
-sleep 15
+sleep 30
 # jsolarz-sanbox
 curl -v -HHost:${SERVICE_URL} --resolve \
   "${SERVICE_URL}:$SECURE_INGRESS_PORT:$INGRESS_HOST" \

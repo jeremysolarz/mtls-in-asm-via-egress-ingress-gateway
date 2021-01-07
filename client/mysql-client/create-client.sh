@@ -1,8 +1,6 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-. $DIR/../../env-vars
-
-$DIR/../../server/set-project-and-cluster-server.sh
+. $DIR/../../server/set-project-and-cluster-server.sh
 
 # !!! WARNING - DO NOT MOVE !!!
 # get Ingress IP from server side
