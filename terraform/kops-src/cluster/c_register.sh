@@ -16,7 +16,7 @@ gcloud iam service-accounts keys create gkehub.json \
   --iam-account=client-cluster-gke-hub-sa@$PROJECT.iam.gserviceaccount.com \
   --project=$PROJECT
 echo "Storing kOps kubeconfig in server-kubeconfig"
-kops export kubecfg server-cluster.k8s.local --kubeconfig $LOCATION/server-kubeconfig --state "gs://$PROJECT-kops-clusters/"/
+./kops export kubecfg server-cluster.k8s.local --kubeconfig $LOCATION/server-kubeconfig --state "gs://$PROJECT-kops-clusters/"/
 echo "Registering kOps cluster into Anthos in project: $PROJECT"
 gcloud container hub memberships register server-cluster \
             --context=server-cluster.k8s.local \
@@ -32,4 +32,4 @@ SECRET_NAME=$(kubectl --kubeconfig $LOCATION/server-kubeconfig get serviceaccoun
   -o jsonpath='{$.secrets[0].name}')
 echo "Copy this token and use it to login to your cluster in cloud console"
 echo $(kubectl --kubeconfig $LOCATION/server-kubeconfig get secret -n kube-system $SECRET_NAME -o jsonpath='{$.data.token}' \
-  | base64 -d | sed $'s/$/\\\n/g') >> kops-ksa.token
+  | base64 -d | sed $'s/$/\\\n/g') >> server-cluster-ksa.token

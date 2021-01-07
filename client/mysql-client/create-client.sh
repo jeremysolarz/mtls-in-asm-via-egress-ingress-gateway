@@ -19,7 +19,6 @@ CERTS_ROOT="$DIR/../../certs"
 SERVICE_URL="$INGRESS_HOST.nip.io"
 # SERVICE_URL="35.239.250.140.nip.io"
 
-kubectl label namespace default istio-injection=enabled
 
 kubectl apply -f service-entry.yaml
 

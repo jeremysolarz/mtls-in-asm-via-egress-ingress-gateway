@@ -12,8 +12,6 @@ export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressga
 # url of the external service
 SERVICE_URL="$INGRESS_HOST.nip.io"
 
-kubectl label namespace default istio-injection=enabled
-
 kubectl apply -f mysql.yaml
 
 kubectl -n istio-system patch --type=json svc istio-ingressgateway -p "$(cat gateway-patch.json)"

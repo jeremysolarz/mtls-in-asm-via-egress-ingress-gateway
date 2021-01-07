@@ -41,7 +41,7 @@ gateway.
        gkeconnect.googleapis.com \
        gkehub.googleapis.com
     ```
-  This will enable the Anthos APIs in your Projet.
+  This will enable the Anthos APIs in your Project.
   Running this will create Anthos PAYG costs as describe here: https://cloud.google.com/anthos/pricing
   Only deleting all Anthos clusters or the entire project itself will stop charges.
 
@@ -108,6 +108,7 @@ First you need to create the certificates for client / server endpoints. The fol
 ```
 ./create-keys.sh
 ```
+Make sure you pick a secure password 
 
 *Note:*
 Client / Server certificates will be created with [mtls-go-example](https://github.com/nicholasjackson/mtls-go-example)
@@ -238,7 +239,7 @@ Now as a final check see if the sidecar proxy was injected properly into the ser
 
 Run
 ```
-kubectl get pods -n default
+kubectl --kubeconfig "../../terraform/server-kubeconfig" get pods -n default
 ```
 
 You should see output similar to this:
@@ -261,3 +262,10 @@ After running the above command you should
 cd client/mysql-client
 ./create-client.sh
 ```   
+
+##### Test the mysql communication
+
+Run the following command to start a mysql client pod and test the connection:
+```
+kubectl run -it --image=mysql:5.6 mysql-client --restart=Never --rm -- /bin/bash
+```
