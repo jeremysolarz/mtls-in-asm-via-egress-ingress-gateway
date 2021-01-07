@@ -33,9 +33,9 @@ kubectl create -n istio-system secret tls mysql-client-certs \
 
 kubectl create -n istio-system secret generic mysql-ca-certs --from-file=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
 
-# kubectl -n istio-system patch --type=json deploy istio-egressgateway -p "$(cat gateway-patch.json)"
+kubectl -n istio-system patch --type=json deploy istio-egressgateway -p "$(cat gateway-patch.json)"
 
-sleep 15
+sleep 20
 kubectl exec -it -n istio-system $(kubectl -n istio-system get pods -l istio=egressgateway -o jsonpath='{.items[0].metadata.name}') \
   -- ls -al /etc/istio/mysql-client-certs /etc/istio/mysql-ca-certs
 
