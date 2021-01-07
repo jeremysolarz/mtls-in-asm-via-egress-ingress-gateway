@@ -19,6 +19,11 @@ CERTS_ROOT="$DIR/../../certs"
 SERVICE_URL="$INGRESS_HOST.nip.io"
 # SERVICE_URL="35.239.250.140.nip.io"
 
+sed "s/SERVICE_URL/$SERVICE_URL/" gateway-destinationrule-to-egressgateway.yaml.tmpl > gateway-destinationrule-to-egressgateway.yaml
+
+sed "s/SERVICE_URL/$SERVICE_URL/" service-entry.yaml.tmpl > service-entry.yaml
+sed "s/SERVICE_URL/$SERVICE_URL/" virtualservice-destinationrule-from-egressgateway.yaml.tmpl > virtualservice-destinationrule-from-egressgateway.yaml
+
 
 kubectl apply -f service-entry.yaml
 

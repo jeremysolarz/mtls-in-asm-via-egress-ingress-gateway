@@ -4,7 +4,7 @@ metadata:
   name: direct-mysql-through-egress-gateway
 spec:
   hosts:
-    - 35.239.250.140.nip.io
+    - SERVICE_URL
   gateways:
     - istio-egressgateway-mysql
     - mesh
@@ -26,7 +26,7 @@ spec:
           port: 15443
       route:
         - destination:
-            host: 35.239.250.140.nip.io
+            host: SERVICE_URL
             port:
               number: 13306
           weight: 100
@@ -36,7 +36,7 @@ kind: DestinationRule
 metadata:
   name: originate-mtls-for-mysql
 spec:
-  host: 35.239.250.140.nip.io
+  host: SERVICE_URL
   trafficPolicy:
     loadBalancer:
       simple: ROUND_ROBIN
@@ -48,4 +48,4 @@ spec:
           clientCertificate: /etc/istio/mysql-client-certs/tls.crt
           privateKey: /etc/istio/mysql-client-certs/tls.key
           caCertificates: /etc/istio/mysql-ca-certs/ca-chain.cert.pem
-          sni: 35.239.250.140.nip.io
+          sni: SERVICE_URL

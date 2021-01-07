@@ -4,7 +4,7 @@ metadata:
   name: mysql-external
 spec:
   hosts:
-    - 35.239.250.140.nip.io
+    - SERVICE_URL
   location: MESH_EXTERNAL
   ports:
     - number: 3306
@@ -15,6 +15,6 @@ spec:
       protocol: TLS
   resolution: DNS
   endpoints:
-    - address: 35.239.250.140.nip.io
+    - address: SERVICE_URL
       ports:
         tls: 13306
