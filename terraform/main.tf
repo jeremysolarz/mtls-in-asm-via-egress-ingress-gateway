@@ -189,14 +189,17 @@ data "template_file" "kops-register" {
   } 
 
 # When = destroy - delete bucket
-resource "null_resource" "kops-bucket-delete" {
-  depends_on = [null_resource.kops-delete-cluster]
+resource "null_resource" "kops-cluster-destroy" {
   triggers = {
-    bucketdest = var.project_id
+    prdestroy = var.project_id
   }
   provisioner "local-exec" {
     when = destroy
-    command = "gsutil rm -r gs://${self.triggers.bucketdest}-kops-clusters"
+    command = <<EOF
+./kops delete cluster server-cluster.k8s.local --yes --state=gs://${self.triggers.prdestroy}-kops-clusters
+gcloud container hub memberships delete server-cluster --quiet
+gsutil rm -r gs://${self.triggers.prdestroy}-kops-clusters
+EOF
   }
 }
 
@@ -210,18 +213,6 @@ resource "local_file" "kops-install" {
   provisioner "local-exec" {
     command = "/tmp/install-kops.sh"
   }
-}
-
-# When = destroy - delete cluster
-resource "null_resource" "kops-delete-cluster" {
-  depends_on = [local_file.kops-register-cluster]
-  triggers = {
-     prdestroy = var.project_id
-  }
-  provisioner "local-exec" {
-    when = destroy
-    command = "kops delete cluster server-cluster.k8s.local --yes --state=\"gs://${self.triggers.prdestroy}-kops-clusters\"\\"
- }
 }
 
 resource "local_file" "kops-create-cluster" {
@@ -250,10 +241,6 @@ resource "local_file" "kops-register-cluster" {
   provisioner "local-exec" {
     command = "/tmp/register.sh"
   }
-  provisioner "local-exec" {
-    when = destroy
-    command = "gcloud container hub memberships delete server-cluster --quiet"
- }
 }
 
 resource "null_resource" "server-cluster-asm" {
