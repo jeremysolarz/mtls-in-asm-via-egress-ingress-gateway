@@ -5,13 +5,6 @@ export PROJECT='${project}'
 export LOCATION='${location}'
 ##
 
-echo -e "This will enable the Anthos APIs in this project $PROJECT!\n 
-Running this will create Anthos PAYG costs as describe here:\n
-https://cloud.google.com/anthos/pricing
-\n
-\n
-Only deleting all Anthos cluster sources will stop charges. If you are done with your tests, please run the cleanup procedure"
-
 echo "Creating and downloading GKE Hub Service Account"
 gcloud iam service-accounts create client-cluster-gke-hub-sa --project=$PROJECT
 gcloud projects add-iam-policy-binding $PROJECT \

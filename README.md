@@ -6,7 +6,9 @@ The following repository should help in setting up mTLS between two clusters via
 gateway.
 
 ## Before you begin
-
+ 
+ - It is best to use a fresh project, especially to test this solution. This will simplify cleanup procedure as well.
+   (delete the project once you are done).
  - If you use your local machine
    - Install and initialize the [Cloud SDK](https://cloud.google.com/sdk/docs/quickstarts) (the gcloud command-line tool).
    - Install `git` command line tool.
@@ -39,11 +41,14 @@ gateway.
        gkeconnect.googleapis.com \
        gkehub.googleapis.com
     ```
+  This will enable the Anthos APIs in your Projet.
+  Running this will create Anthos PAYG costs as describe here: https://cloud.google.com/anthos/pricing
+  Only deleting all Anthos clusters or the entire project itself will stop charges.
 
 ### Alternatives
 
 The deployment of mutial TLS via Ingress <> Egress Gateways was tested with GKE, Anthos on AWS and 
-Anthos attached cluster EKS K8s 1.16 if you want to have another setup you will need the following.
+Anthos attached cluster EKS K8s 1.16 as well if you want to have another setup you will need the following.
 
 Setup requirements: 
  - Two Anthos clusters with external internet access 
@@ -52,6 +57,9 @@ Setup requirements:
    - [Direct Envoy to stdout](https://cloud.google.com/service-mesh/docs/enable-optional-features#direct_envoy_to_stdout) via optional features enabled 
  - If you want to use an Anthos on AWS cluster, follow 
    [Install GKE on AWS prerequisites](https://cloud.google.com/anthos/gke/docs/aws/how-to/prerequisites#anthos_gke_command-line_tool) / installation.
+
+Note: The KOPS installation used in this solution is for demo purposes and, at the time of writing this, 
+not necissarily fully supported by Anthos Service Mesh.
 
 ## Installation
 
@@ -72,6 +80,7 @@ Depending on if you already have two Anthos GKE clusters with ASM installed or n
    zones = ["${ZONE}"]
    EOF
    ```
+   Please only put in one single zone, e.g.: us-central1-a
 
 1. Run the Terraform scripts to setup client / server cluster.
    ```
