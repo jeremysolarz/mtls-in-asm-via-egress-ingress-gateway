@@ -6,6 +6,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # get Ingress IP from server side
 export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
+unset KUBECONFIG
+
 $DIR/../set-project-and-cluster-client.sh
 
 $DIR/./clean-up.sh
