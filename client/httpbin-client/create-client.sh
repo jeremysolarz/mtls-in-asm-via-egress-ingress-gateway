@@ -32,9 +32,11 @@ kubectl apply -f httpbin-external.yaml
 # add the service entry to the istio registry
 kubectl apply -f service-entry.yaml
 
-kubectl create secret tls httpbin-client-certs --key $CERTS_ROOT/4_client/private/${SERVICE_URL}.key.pem \
+kubectl create secret tls httpbin-client-certs \
+  --key $CERTS_ROOT/4_client/private/${SERVICE_URL}.key.pem \
   --cert $CERTS_ROOT/4_client/certs/${SERVICE_URL}.cert.pem
-kubectl create secret generic httpbin-ca-certs --from-file=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
+kubectl create secret generic httpbin-ca-certs \
+  --from-file=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
 
 kubectl apply -f sleep.yaml
 
@@ -48,12 +50,19 @@ kubectl exec -it $SOURCE_POD -c sleep -- curl -v \
   --cert /etc/httpbin-client-certs/tls.crt \
   --key /etc/httpbin-client-certs/tls.key https://${SERVICE_URL}/status/418
 
+# TODO replace file-mount with SDS
+# kubectl create secret -n istio-system generic client-credential \
+#  --from-file=tls.key=$CERTS_ROOT/4_client/private/${SERVICE_URL}.key.pem \
+#  --from-file=tls.crt=$CERTS_ROOT/4_client/certs/${SERVICE_URL}.cert.pem \
+#  --from-file=ca.crt=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
+
+
 # create the secrets that hold the certificates for the egress proxy
 kubectl create -n istio-system secret tls httpbin-client-certs \
   --key $CERTS_ROOT/4_client/private/${SERVICE_URL}.key.pem \
   --cert $CERTS_ROOT/4_client/certs/${SERVICE_URL}.cert.pem
-
-kubectl create -n istio-system secret generic httpbin-ca-certs --from-file=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
+kubectl create -n istio-system secret generic httpbin-ca-certs \
+  --from-file=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
 
 # patch the egress gateway to mount the secret (aka certificates)
 kubectl -n istio-system patch --type=json deploy istio-egressgateway -p "$(cat gateway-patch.json)"
