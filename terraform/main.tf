@@ -131,8 +131,8 @@ EOF
       ZONE = var.zones[0]
       TYPE = "client"
       TERRAFORM_ROOT = abspath(path.root)
-      ASM_VERSION    = "1.6.11-asm.1"
-      ASM_REVISION   = "1611-1"
+      ASM_VERSION    = "1.7.3-asm.6"
+      ASM_REVISION   = "173-6"
     }
   }
 }
@@ -258,8 +258,8 @@ EOF
       ZONE = var.zones[0]
       TYPE = "server"
       TERRAFORM_ROOT = abspath(path.root)
-      ASM_VERSION    = "1.6.11-asm.1"
-      ASM_REVISION   = "1611-1"
+      ASM_VERSION    = "1.7.3-asm.6"
+      ASM_REVISION   = "173-6"
     }
   }
 }
