@@ -27,17 +27,22 @@ sed "s/SERVICE_URL/$SERVICE_URL/" virtualservice-destinationrule-from-egressgate
 
 kubectl apply -f service-entry.yaml
 
-kubectl create -n istio-system secret tls mysql-client-certs \
-  --key $CERTS_ROOT/4_client/private/${SERVICE_URL}.key.pem \
-  --cert $CERTS_ROOT/4_client/certs/${SERVICE_URL}.cert.pem
+# kubectl create -n istio-system secret tls mysql-client-certs \
+#  --key $CERTS_ROOT/4_client/private/${SERVICE_URL}.key.pem \
+#  --cert $CERTS_ROOT/4_client/certs/${SERVICE_URL}.cert.pem
 
-kubectl create -n istio-system secret generic mysql-ca-certs --from-file=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
+# kubectl create -n istio-system secret generic mysql-ca-certs --from-file=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
 
-kubectl -n istio-system patch --type=json deploy istio-egressgateway -p "$(cat gateway-patch.json)"
+# kubectl -n istio-system patch --type=json deploy istio-egressgateway -p "$(cat gateway-patch.json)"
+
+kubectl create secret -n istio-system generic client-credential \
+  --from-file=tls.key=$CERTS_ROOT/4_client/private/${SERVICE_URL}.key.pem \
+  --from-file=tls.crt=$CERTS_ROOT/4_client/certs/${SERVICE_URL}.cert.pem \
+  --from-file=ca.crt=$CERTS_ROOT/2_intermediate/certs/ca-chain.cert.pem
 
 sleep 20
-kubectl exec -it -n istio-system $(kubectl -n istio-system get pods -l istio=egressgateway -o jsonpath='{.items[0].metadata.name}') \
-  -- ls -al /etc/istio/mysql-client-certs /etc/istio/mysql-ca-certs
+# kubectl exec -it -n istio-system $(kubectl -n istio-system get pods -l istio=egressgateway -o jsonpath='{.items[0].metadata.name}') \
+#  -- ls -al /etc/istio/mysql-client-certs /etc/istio/mysql-ca-certs
 
 # setup routing for the mysql service inside the mesh
 kubectl apply -f gateway-destinationrule-to-egressgateway.yaml
