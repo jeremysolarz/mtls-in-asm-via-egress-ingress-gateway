@@ -6,14 +6,10 @@ $DIR/../set-project-and-cluster-client.sh
 kubectl delete --ignore-not-found=true secret mysql-client-certs mysql-ca-certs
 kubectl delete --ignore-not-found=true secret mysql-client-certs mysql-ca-certs -n istio-system
 
-kubectl delete -f gateway-destinationrule-to-egressgateway.yaml
-kubectl delete -f virtualservice-destinationrule-from-egressgateway.yaml
-kubectl delete -f service-entry.yaml
+kubectl delete --ignore-not-found=true gateway istio-egressgateway-mysql
+kubectl delete --ignore-not-found=true destinationrule egressgateway-for-mysql
 
-# reset ASM
-#istioctl install \
-#  -f ../../../istio-1.6.8-asm.9/asm/cluster/istio-operator.yaml \
-#-f ../features.yaml
-#
-#kubectl get deploy -n istio-system
-#kubectl get ns
+kubectl delete --ignore-not-found=true virtualservice direct-mysql-through-egress-gateway
+kubectl delete --ignore-not-found=true destinationrule originate-mtls-for-mysql
+
+kubectl delete --ignore-not-found=true serviceentry mysql-external
