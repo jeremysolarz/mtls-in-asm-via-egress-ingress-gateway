@@ -36,5 +36,5 @@ output "client_token" {
 
 output "server_token" {
   sensitive = true
-  value     = base64encode(data.local_file.kops_token)
+  value     = data.local_file.kops_token.content_base64
 }
