@@ -270,7 +270,13 @@ mysql-5bf4c56867-sjs7m   2/2     Running   0          71s
 The "2/2" means that there are actually 2 containers running in that pod. If you want to do further cecks that this is the porxy container,
 you could use the following command:
 ```
-kubectl --kubeconfig "../../terraform/server-kubeconfig" describe pod mysql-5bf4c56867-sjs7m  
+kubectl --kubeconfig "../../terraform/server-kubeconfig" describe pod -l app=mysql
+```
+
+The output will look similar to this. 
+
+```
+...  
 Containers:
   mysql:
       Container ID:   docker://175c29c47e6816986be02d3b912ec1000d36bd2d241f1ff7e1f9794b5a73654b
@@ -295,8 +301,9 @@ Containers:
       Image ID:      docker-pullable://gcr.io/gke-release/asm/proxyv2@sha256:3d690b4bb3f3b8c7069ae650cfac23b433d6de16121e136b6d55e7e891cb1f3e
       Port:          15090/TCP
       Host Port:     0/TCP
+...
 ```
-The output will look similar to this. At the "Containers" section (cut out), you will notice that there is a second container called "istio-proxy". This is 
+At the "Containers" section (cut out), you will notice that there is a second container called "istio-proxy". This is 
 the automatically injected Envoy proxy. 
 
 Go back to the root directory.
@@ -340,10 +347,13 @@ Once the container has started we are presented with a shell which should look s
 root@mysql-client:/# 
 ```
 To connect to our MySQL server, run the following command (remember to use the HOST FQDN from the earlier query):
-````
+
+```
 mysql -pyougottoknowme -h 35.239.250.140.nip.io
 ```
+
 If all is well, this should greet us with the following dialog:
+
 ```
 Warning: Using a password on the command line interface can be insecure.
 Welcome to the MySQL monitor.  Commands end with ; or \g.
@@ -359,7 +369,7 @@ owners.
 Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
 mysql> 
-````
+```
 
 Once we are in, lets create a database and some records. Anyhow, this means the established connection between these two clusters 
 using a mysql protocul via standard ports (3306) is already encrypted. This is transparent to the mysql protocol though!
@@ -401,11 +411,13 @@ mysql-757844b949-9lzst   2/2     Running   0          57m
 Note the name, it is needed for the connect command. 
 
 To log into the container shell directly use this (your DB pod will have a different name!):
+
 ```
 kubectl --kubeconfig "../../terraform/server-kubeconfig" exec mysql-757844b949-9lzst -ti -- /bin/bash
 ```
 
 Once you are in the terminal, just use the good old MySQL commandline to query the local database:
+
 ```
 mysql -pyougottoknowme
 USE use encrypted;
@@ -458,12 +470,12 @@ After concluding these steps you have successfully:
 - Created two K8s Clusters (Server and Client Side)
 - Setup ASM on both clusters with different mesh internal certificates
 - Setup Ingress (Server) and Egress (Client) Gateways using pre-created Certificates
-- Create and setup destionation rules, service entrys and gateway patechs to ensure an encrypted
+- Create and setup destination rules, service entrys and gateway patechs to ensure an encrypted
   communication between client and server cluster. Fully transparent for the client (mysql standard port 3306)
 - Tested communication from outside the mesh ("unencrypted") which led to failure (as expected!)
 
 The beauty about this solution is that this works between two service meshes, but also between a service mesh and another 
-provider which supports mTLS encryption. Those could be payment, financial services or other transations which require extry tight security.
-The Certificate for these connections can be handled outside of the mesh - this means less changes if Certs need to be renewed. 
+provider which supports mTLS encryption. Those could be payment, financial services or other transactions which require extra tight security.
+The Certificate for these connections can be handled outside of the mesh - this means fewer changes if Certs need to be renewed. 
 
 This concludes this Readme - enjoy using this examplary repo for your own testing, learning and success with Anthos Service Mesh!
