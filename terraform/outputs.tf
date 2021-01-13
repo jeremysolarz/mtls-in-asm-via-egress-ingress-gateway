@@ -14,21 +14,6 @@
  * limitations under the License.
  */
 
-output "client_kubernetes_endpoint" {
-  sensitive = true
-  value     = module.client-cluster.endpoint
-}
-
-output "client_ca_certificate" {
-  sensitive = true
-  value = module.client-cluster.ca_certificate
-}
-
-output "client_service_account" {
-  description = "The default service account used for running nodes."
-  value       = module.client-cluster.service_account
-}
-
 output "client_token" {
   sensitive = true
   value     = base64encode(data.google_client_config.default.access_token)
