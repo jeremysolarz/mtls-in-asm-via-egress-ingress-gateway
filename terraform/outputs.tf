@@ -21,5 +21,5 @@ output "client_token" {
 
 output "server_token" {
   sensitive = true
-  value     = data.local_file.kops_token.content_base64
+  value     = data.local_file.kops_token.content
 }
