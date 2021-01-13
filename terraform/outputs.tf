@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-output "client_token" {
-  sensitive = true
-  value     = base64encode(data.google_client_config.default.access_token)
-}
-
 output "server_token" {
   sensitive = true
   value     = data.local_file.kops_token.content
