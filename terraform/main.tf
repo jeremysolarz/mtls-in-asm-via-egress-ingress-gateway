@@ -118,14 +118,6 @@ module "client-cluster" {
   ]
 }
 
-/*module "client-cluster-asm" {
-  source           = "github.com/jeremysolarz/terraform-google-kubernetes-engine.git//modules/asm"
-  cluster_name     = module.client-cluster.name
-  cluster_endpoint = module.client-cluster.endpoint
-  project_id       = var.project_id
-  location         = module.client-cluster.location
-}*/
-
 resource "null_resource" "client-cluster-asm" {
 
   depends_on = [module.client-cluster]
