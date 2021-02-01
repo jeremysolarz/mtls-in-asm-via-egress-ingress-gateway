@@ -43,7 +43,7 @@ gateway.
     ```
   This will enable the Anthos APIs in your Project.
   Running this will create Anthos PAYG costs as describe here: https://cloud.google.com/anthos/pricing
-  Only deleting all Anthos clusters or the entire project itself will stop charges.
+  Deleting all Anthos clusters or the entire project itself will stop charges.
 
 ### Alternatives
 
