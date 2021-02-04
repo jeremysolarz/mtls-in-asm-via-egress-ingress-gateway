@@ -269,5 +269,5 @@ EOF
 # output the token into output vars
 data "local_file" "kops_token" {
   depends_on = [local_file.kops-register-cluster]
-  filename = "kops-ksa.token"
+  filename = "server-cluster-ksa.token"
 }
