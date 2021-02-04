@@ -27,19 +27,23 @@ gateway.
  - Enable the APIs needed for the tutorial:
    ```
    gcloud services enable \
-       compute.googleapis.com \
-       container.googleapis.com \
-       cloudresourcemanager.googleapis.com \
-       stackdriver.googleapis.com \
-       monitoring.googleapis.com \
-       logging.googleapis.com \
-       cloudtrace.googleapis.com \
-       meshca.googleapis.com \
-       meshtelemetry.googleapis.com \
-       meshconfig.googleapis.com \
-       iamcredentials.googleapis.com \
-       gkeconnect.googleapis.com \
-       gkehub.googleapis.com
+     anthos.googleapis.com \
+     anthosgke.googleapis.com \
+     anthosaudit.googleapis.com \
+     compute.googleapis.com \
+     container.googleapis.com \
+     cloudresourcemanager.googleapis.com \
+     serviceusage.googleapis.com \
+     stackdriver.googleapis.com \
+     monitoring.googleapis.com \
+     logging.googleapis.com \
+     cloudtrace.googleapis.com \
+     meshca.googleapis.com \
+     meshtelemetry.googleapis.com \
+     meshconfig.googleapis.com \
+     iamcredentials.googleapis.com \
+     gkeconnect.googleapis.com \
+     gkehub.googleapis.com
     ```
   This will enable the Anthos APIs in your Project.
   Running this will create Anthos PAYG costs as describe here: https://cloud.google.com/anthos/pricing

@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
+terraform {
+  required_version = ">= 0.13.5"
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version =  ">= 3.52.0"
+    }
+  }
+}
+     
 provider "google" {
   region  = var.region
 }
@@ -107,14 +117,6 @@ module "client-cluster" {
     },
   ]
 }
-
-/*module "client-cluster-asm" {
-  source           = "github.com/jeremysolarz/terraform-google-kubernetes-engine.git//modules/asm"
-  cluster_name     = module.client-cluster.name
-  cluster_endpoint = module.client-cluster.endpoint
-  project_id       = var.project_id
-  location         = module.client-cluster.location
-}*/
 
 resource "null_resource" "client-cluster-asm" {
 
@@ -267,5 +269,5 @@ EOF
 # output the token into output vars
 data "local_file" "kops_token" {
   depends_on = [local_file.kops-register-cluster]
-  filename = "kops-ksa.token"
+  filename = "server-cluster-ksa.token"
 }
