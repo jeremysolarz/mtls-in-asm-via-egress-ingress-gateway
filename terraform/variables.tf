@@ -20,10 +20,12 @@ variable "project_id" {
 
 variable "region" {
   description = "The region to host the cluster in"
+  default = "us-central1"
 }
 
 variable "zones" {
   type = list(string)
+  default = ["us-central1-a"]
   description = "The zone to host the cluster in (required if is a zonal cluster)"
 }
 
